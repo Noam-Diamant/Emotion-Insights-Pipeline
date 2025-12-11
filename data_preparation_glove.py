@@ -35,7 +35,7 @@ VALIDATION_FILE = './data/validation.csv'
 TEST_FILE = './data/test.csv'
 RESULTS_fOLDER = './results'
 SAVE_MODELS_FOLDER = './hp_models'
-BEST_MODEL_KIND = 'gru' # 'lstm' or 'gru'
+BEST_MODEL_KIND = 'gru' #  'lstm' or 'gru'
 
 ###  params for gru and lstm networks. the code runs all the possible combinations of params for each network.
 ### (there is a threshold for max combination in hyperparameter_search function [max_models])
