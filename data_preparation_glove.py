@@ -35,16 +35,23 @@ VALIDATION_FILE = './data/validation.csv'
 TEST_FILE = './data/test.csv'
 RESULTS_fOLDER = './results'
 SAVE_MODELS_FOLDER = './hp_models'
-BEST_MODEL_KIND = 'lstm' # 'lstm' or 'gru'
+BEST_MODEL_KIND = 'gru' # 'lstm' or 'gru'
 
 ###  params for gru and lstm networks. the code runs all the possible combinations of params for each network.
 ### (there is a threshold for max combination in hyperparameter_search function [max_models])
 
-PARAM_GRID = {
-'hidden_units': [64, 128],
-'dropout_rate': [0.3, 0.5],
-'trainable_embeddings': [False, True],
-'lr': [1e-3, 5e-4]
+PARAM_GRID_LSTM = {
+'hidden_units': [64],
+'dropout_rate': [0.3],
+'trainable_embeddings': [True],
+'lr': [5e-4]
+}
+
+PARAM_GRID_GRU = {
+'hidden_units': [64],
+'dropout_rate': [0.3],
+'trainable_embeddings': [True],
+'lr': [8e-3]
 }
 
 def load_data(data_file, dataset_name="Data"):
@@ -915,12 +922,12 @@ if __name__ == "__main__":
     # Limit the number of models to keep runtime reasonable (set max_models=None to run all combos)
     hp_summary_lstm = hyperparameter_search('lstm', X_train, y_train, X_val, y_val,
                                             vocab_size, embedding_dim, embedding_matrix,
-                                            max_len, num_classes, PARAM_GRID, max_models=6,
+                                            max_len, num_classes, PARAM_GRID_LSTM, max_models=6,
                                             results_filename='hp_results_lstm.json')
 
     hp_summary_gru = hyperparameter_search('gru', X_train, y_train, X_val, y_val,
                                            vocab_size, embedding_dim, embedding_matrix,
-                                           max_len, num_classes, PARAM_GRID, max_models=6,
+                                           max_len, num_classes, PARAM_GRID_GRU, max_models=6,
                                            results_filename='hp_results_gru.json')
 
     hp_best_metrics_lstm = evaluate_best_hp_and_save(hp_summary_lstm, X_val, y_val, class_names, 'lstm_hp')
