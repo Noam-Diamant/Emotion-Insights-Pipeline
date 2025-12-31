@@ -1370,8 +1370,6 @@ if __name__ == "__main__":
         best_model_type = best_model_name.lower()
         print(f"\nUsing {best_model_name} model (val_accuracy: {best_result['val_accuracy']:.4f})")
         print(f"Best model path: {best_result['model_path']}")
-    else:
-        print("Skipping test predictions (no comparison results or test file not found)")
 
         # Load test data
         test_df = pd.read_csv(TEST_FILE)
@@ -1419,6 +1417,8 @@ if __name__ == "__main__":
         out_df.to_csv(output_path, index=False)
         print(f"Saved test predictions to {output_path}")
         print(f"Predictions generated using {best_model_name} model")
+    else:
+        print("Skipping test predictions (no comparison results or test file not found)")
 
     print("\n" + "=" * 70)
     print("Pipeline Complete!")
