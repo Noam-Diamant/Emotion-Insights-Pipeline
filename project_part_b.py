@@ -73,23 +73,32 @@ def load_data(data_file, dataset_name="Data"):
     print("=" * 70)
     print(f"Loading {dataset_name}")
     print("=" * 70)
+    print(f"Reading file: {data_file}")
+    print(f"File exists: {os.path.exists(data_file)}")
 
     df = pd.read_csv(data_file)
     print(f"Loaded {len(df)} samples from {data_file}")
     print(f"Columns: {df.columns.tolist()}")
+    print(f"DataFrame shape: {df.shape}")
 
     text_column = "text" if "text" in df.columns else df.columns[0]
     label_column = "label" if "label" in df.columns else None
+    print(f"Using text column: '{text_column}'")
+    print(f"Using label column: '{label_column}'")
 
     texts = df[text_column].values
+    print(f"Texts dtype: {texts.dtype}, shape: {texts.shape}")
     if label_column is None:
         print(f"Number of samples: {len(texts)}")
+        print(f"No labels found, returning texts only")
         return texts, None
 
     labels = df[label_column].values
+    print(f"Labels dtype: {labels.dtype}, shape: {labels.shape}")
     print(f"Number of samples: {len(texts)}")
     print(f"Number of unique emotions: {len(np.unique(labels))}")
     print(f"Emotion distribution: {np.bincount(labels)}")
+    print(f"Label range: [{labels.min()}, {labels.max()}]")
 
     return texts, labels
 
@@ -312,6 +321,11 @@ def prepare_model_data(texts, labels=None, model_type="bert", model_name=None, m
     Returns:
         dict: Dictionary with 'input_ids', 'attention_mask', and optionally 'labels'
     """
+    print(f"\nStarting data preparation for {model_type.upper()}")
+    print(f"Input texts count: {len(texts)}")
+    print(f"Max length: {max_length}")
+    print(f"Labels provided: {labels is not None}")
+    
     # Set default model names
     if model_name is None:
         model_names = {"bert": BERT_MODEL_NAME, "electra": ELECTRA_MODEL_NAME, "roberta": ROBERTA_MODEL_NAME}
@@ -334,17 +348,24 @@ def prepare_model_data(texts, labels=None, model_type="bert", model_name=None, m
         raise ValueError(f"Unknown model_type: {model_type}")
 
     # Preprocess texts
+    print(f"Preprocessing {len(texts)} texts...")
     processed_texts = [preprocess_text(str(text)) for text in texts]
+    print(f"Preprocessing complete. Sample length range: [{min(len(t) for t in processed_texts)}, {max(len(t) for t in processed_texts)}]")
 
     # Tokenize
+    print(f"Tokenizing texts with max_length={max_length}...")
     encoded = tokenizer(processed_texts, add_special_tokens=True, max_length=max_length, padding="max_length", truncation=True, return_attention_mask=True, return_tensors="np")
+    print(f"Tokenization complete")
 
     result = {"input_ids": encoded["input_ids"], "attention_mask": encoded["attention_mask"], "tokenizer": tokenizer}
 
     if labels is not None:
         result["labels"] = labels
+        print(f"Labels shape: {labels.shape}, dtype: {labels.dtype}")
 
     print(f"{model_type.upper()} data prepared. Input shape: {encoded['input_ids'].shape}")
+    print(f"Input IDs dtype: {encoded['input_ids'].dtype}, range: [{encoded['input_ids'].min()}, {encoded['input_ids'].max()}]")
+    print(f"Attention mask shape: {encoded['attention_mask'].shape}")
     return result
 
 
@@ -353,8 +374,10 @@ class TransformerClassifier(nn.Module):
 
     def __init__(self, model_type, model_name, num_classes, dropout_rate=0.1):
         super(TransformerClassifier, self).__init__()
+        print(f"Initializing TransformerClassifier: type={model_type}, model_name={model_name}, num_classes={num_classes}, dropout_rate={dropout_rate}")
 
         # Load pretrained transformer
+        print(f"Loading pretrained {model_type.upper()} model from {model_name}...")
         if model_type == "bert":
             self.transformer = BertModel.from_pretrained(model_name)
         elif model_type == "electra":
@@ -363,14 +386,17 @@ class TransformerClassifier(nn.Module):
             self.transformer = RobertaModel.from_pretrained(model_name)
         else:
             raise ValueError(f"Unknown model_type: {model_type}")
+        print(f"{model_type.upper()} base model loaded successfully")
 
         # Classification head
         hidden_size = self.transformer.config.hidden_size
+        print(f"Transformer hidden size: {hidden_size}")
         self.dropout1 = nn.Dropout(dropout_rate)
         self.fc1 = nn.Linear(hidden_size, 128)
         self.relu = nn.ReLU()
         self.dropout2 = nn.Dropout(dropout_rate / 2)
         self.fc2 = nn.Linear(128, num_classes)
+        print(f"Classification head: {hidden_size} -> 128 -> {num_classes}")
 
     def forward(self, input_ids, attention_mask):
         # Get transformer output
@@ -401,22 +427,29 @@ def build_model(model_type="bert", model_name=None, num_classes=6, max_length=MA
     Returns:
         Tuple of (model, optimizer, device)
     """
+    print(f"\nBuilding {model_type.upper()} model...")
+    print(f"Parameters: num_classes={num_classes}, dropout_rate={dropout_rate}, lr={lr}")
+    
     # Set default model names
     if model_name is None:
         model_names = {"bert": BERT_MODEL_NAME, "electra": ELECTRA_MODEL_NAME, "roberta": ROBERTA_MODEL_NAME}
         model_name = model_names[model_type]
 
-    print(f"\nBuilding {model_type.upper()} model from {model_name}...")
+    print(f"Building {model_type.upper()} model from {model_name}...")
 
     # Create model
     model = TransformerClassifier(model_type, model_name, num_classes, dropout_rate)
 
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Moving model to device: {device}")
+    if torch.cuda.is_available():
+        print(f"CUDA available: {torch.cuda.get_device_name(0)}")
     model.to(device)
 
     # Create optimizer
     optimizer = AdamW(model.parameters(), lr=lr)
+    print(f"Optimizer created: AdamW with lr={lr}")
 
     # Calculate model size
     model_size_mb = sum(p.numel() for p in model.parameters()) * 4 / (1024 * 1024)  # 4 bytes per parameter (float32)
@@ -450,21 +483,30 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
     Returns:
         dict: Training history
     """
+    print(f"\nStarting training...")
+    print(f"Training samples: {len(y_train)}, Validation samples: {len(y_val)}")
+    print(f"Epochs: {epochs}, Batch size: {batch_size}, Patience: {patience}")
+    
     # Convert data to tensors
+    print(f"Converting data to tensors...")
     train_input_ids = torch.tensor(X_train["input_ids"], dtype=torch.long)
     train_attention_mask = torch.tensor(X_train["attention_mask"], dtype=torch.long)
     train_labels = torch.tensor(y_train, dtype=torch.long)
+    print(f"Train tensors - input_ids: {train_input_ids.shape}, attention_mask: {train_attention_mask.shape}, labels: {train_labels.shape}")
 
     val_input_ids = torch.tensor(X_val["input_ids"], dtype=torch.long)
     val_attention_mask = torch.tensor(X_val["attention_mask"], dtype=torch.long)
     val_labels = torch.tensor(y_val, dtype=torch.long)
+    print(f"Val tensors - input_ids: {val_input_ids.shape}, attention_mask: {val_attention_mask.shape}, labels: {val_labels.shape}")
 
     # Create datasets and dataloaders
     train_dataset = TensorDataset(train_input_ids, train_attention_mask, train_labels)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    print(f"Train dataloader: {len(train_loader)} batches")
 
     val_dataset = TensorDataset(val_input_ids, val_attention_mask, val_labels)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    print(f"Val dataloader: {len(val_loader)} batches")
 
     # Calculate class weights to handle class imbalance
     class_counts = np.bincount(y_train)
@@ -490,14 +532,16 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
     patience_counter = 0
 
     # Training loop
+    print(f"\nBeginning training loop...")
     for epoch in range(epochs):
+        print(f"\nEpoch {epoch + 1}/{epochs}")
         # Training phase
         model.train()
         train_loss = 0.0
         train_correct = 0
         train_total = 0
 
-        for batch_input_ids, batch_attention_mask, batch_labels in train_loader:
+        for batch_idx, (batch_input_ids, batch_attention_mask, batch_labels) in enumerate(train_loader):
             batch_input_ids = batch_input_ids.to(device)
             batch_attention_mask = batch_attention_mask.to(device)
             batch_labels = batch_labels.to(device)
@@ -512,9 +556,13 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
             _, predicted = torch.max(outputs, 1)
             train_total += batch_labels.size(0)
             train_correct += (predicted == batch_labels).sum().item()
+            
+            if batch_idx == 0:
+                print(f"  First batch - loss: {loss.item():.4f}, batch_size: {batch_labels.size(0)}")
 
         train_loss /= len(train_loader)
         train_acc = train_correct / train_total
+        print(f"  Train - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, correct: {train_correct}/{train_total}")
 
         # Validation phase
         model.eval()
@@ -538,6 +586,7 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
 
         val_loss /= len(val_loader)
         val_acc = val_correct / val_total
+        print(f"  Val   - loss: {val_loss:.4f}, accuracy: {val_acc:.4f}, correct: {val_correct}/{val_total}")
 
         # Update history
         history["loss"].append(train_loss)
@@ -561,8 +610,11 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
     # Restore best model
     if best_model_state is not None:
         model.load_state_dict(best_model_state)
-        print("Restored best model weights")
+        print(f"Restored best model weights (best_val_loss: {best_val_loss:.4f})")
+    else:
+        print("No best model state to restore")
 
+    print(f"Training completed. History contains {len(history['loss'])} epochs")
     return history
 
 
@@ -586,6 +638,11 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
     Returns:
         dict: Summary with best model info and all results
     """
+    print(f"\nStarting hyperparameter search for {model_type.upper()}")
+    print(f"Input shapes - X_train: {X_train['input_ids'].shape}, y_train: {y_train.shape}")
+    print(f"Input shapes - X_val: {X_val['input_ids'].shape}, y_val: {y_val.shape}")
+    print(f"Number of classes: {num_classes}")
+    
     if param_grid is None:
         param_grid = PARAM_GRID
 
@@ -597,7 +654,10 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         for lr in param_grid.get("lr", [2e-5]):
             combos.append({"dropout_rate": dr, "lr": lr})
 
-    print(f"\n{model_type.upper()} hyperparameter search will run {len(combos)} combos (max_models={max_models})")
+    print(f"Parameter grid: {param_grid}")
+    print(f"{model_type.upper()} hyperparameter search will run {len(combos)} combos (max_models={max_models})")
+    print(f"All parameter combinations: {combos}")
+    
     all_results = []
     best_val_acc = -1.0
     best_info = None
@@ -605,6 +665,7 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
 
     # Track total training time
     total_start_time = time.time()
+    print(f"Hyperparameter search started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(total_start_time))}")
 
     for params in combos:
         if (max_models is not None) and (model_count >= max_models):
@@ -632,6 +693,7 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
 
         os.makedirs(SAVE_MODELS_FOLDER, exist_ok=True)
         model_path = f"{SAVE_MODELS_FOLDER}/{model_type}_dr{params['dropout_rate']}_lr{params['lr']}.pt"
+        print(f"Saving model to {model_path}...")
         torch.save(model.state_dict(), model_path)
         print(f"Saved {model_type.upper()} model to {model_path}")
 
@@ -647,18 +709,24 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
             "total_parameters": int(total_params),
         }
         all_results.append(result)
+        print(f"Current best val_accuracy: {best_val_acc:.4f}, this model: {val_acc:.4f}")
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             best_info = result
+            print(f"New best model found! Val accuracy: {best_val_acc:.4f}")
 
     total_train_time = time.time() - total_start_time
+    print(f"\nHyperparameter search completed in {total_train_time:.2f} seconds ({total_train_time / 60:.2f} minutes)")
+    print(f"Trained {model_count} models, best val_accuracy: {best_val_acc:.4f}")
 
     summary = {"best_model_info": best_info, "all_results": all_results, "total_training_time_seconds": float(total_train_time), "num_models_trained": model_count}
     summary_path = os.path.join(RESULTS_FOLDER, results_filename)
+    os.makedirs(RESULTS_FOLDER, exist_ok=True)
+    print(f"Saving summary to {summary_path}...")
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
-    print(f"\nSaved {model_type.upper()} hyperparameter search summary to {summary_path}")
+    print(f"Saved {model_type.upper()} hyperparameter search summary to {summary_path}")
 
     return summary
 
@@ -689,26 +757,36 @@ def evaluate_best_model(model_type, hp_summary, X_val, y_val, class_names):
     best_model_path = hp_summary["best_model_info"]["model_path"]
     best_params = hp_summary["best_model_info"]["params"]
     print(f"Loading best {model_type.upper()} model from {best_model_path} ...")
+    print(f"Best model params: {best_params}")
+    print(f"Best model path exists: {os.path.exists(best_model_path)}")
 
     # Recreate model architecture
     model_name_map = {"bert": BERT_MODEL_NAME, "electra": ELECTRA_MODEL_NAME, "roberta": ROBERTA_MODEL_NAME}
     model_name = model_name_map[model_type]
     num_classes = len(class_names)
+    print(f"Recreating model architecture: {model_type}, {num_classes} classes")
 
     model, _, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, dropout_rate=best_params["dropout_rate"], lr=best_params["lr"])
 
     # Load saved weights
+    print(f"Loading weights from {best_model_path}...")
     model.load_state_dict(torch.load(best_model_path, map_location=device, weights_only=True))
     model.eval()
+    print("Model weights loaded and set to eval mode")
 
     # Prepare validation data
+    print(f"Preparing validation data tensors...")
     val_input_ids = torch.tensor(X_val["input_ids"], dtype=torch.long).to(device)
     val_attention_mask = torch.tensor(X_val["attention_mask"], dtype=torch.long).to(device)
+    print(f"Validation data shape: {val_input_ids.shape}")
 
     # Make predictions
+    print(f"Making predictions on {len(val_input_ids)} samples...")
     with torch.no_grad():
         batch_size = 16
         all_probs = []
+        num_batches = (len(val_input_ids) + batch_size - 1) // batch_size
+        print(f"Processing {num_batches} batches with batch_size={batch_size}")
         for i in range(0, len(val_input_ids), batch_size):
             batch_input_ids = val_input_ids[i : i + batch_size]
             batch_attention_mask = val_attention_mask[i : i + batch_size]
@@ -719,6 +797,8 @@ def evaluate_best_model(model_type, hp_summary, X_val, y_val, class_names):
 
         preds_proba = np.vstack(all_probs)
         preds = preds_proba.argmax(axis=1)
+        print(f"Predictions shape: {preds.shape}, probabilities shape: {preds_proba.shape}")
+        print(f"Prediction range: [{preds.min()}, {preds.max()}], unique predictions: {len(np.unique(preds))}")
 
     # Calculate metrics
     acc = accuracy_score(y_val, preds)
@@ -789,19 +869,27 @@ def run_inference(weights_path, csv_path, model_type=None, output_path=None, num
 
     print(f"Model type: {model_type.upper()}")
     print(f"Weights: {weights_path}")
+    print(f"Weights file exists: {os.path.exists(weights_path)}")
     print(f"Input CSV: {csv_path}")
+    print(f"Input CSV exists: {os.path.exists(csv_path)}")
+    print(f"Parameters: num_classes={num_classes}, max_length={max_length}")
 
     # Load CSV data
+    print(f"\nLoading CSV data from {csv_path}...")
     df = pd.read_csv(csv_path)
+    print(f"CSV loaded. Shape: {df.shape}, Columns: {df.columns.tolist()}")
     text_column = "text" if "text" in df.columns else df.columns[0]
     texts = df[text_column].values
     print(f"Loaded {len(texts)} samples from {csv_path}")
+    print(f"Using text column: '{text_column}'")
 
     # Check if labels exist (for evaluation)
     has_labels = "label" in df.columns
     if has_labels:
         true_labels = df["label"].values
-        print("Found labels column - will compute accuracy")
+        print(f"Found labels column - will compute accuracy. Label shape: {true_labels.shape}, unique labels: {len(np.unique(true_labels))}")
+    else:
+        print("No labels column found - inference only mode")
 
     # Get model name
     model_name_map = {"bert": BERT_MODEL_NAME, "electra": ELECTRA_MODEL_NAME, "roberta": ROBERTA_MODEL_NAME}
@@ -843,9 +931,12 @@ def run_inference(weights_path, csv_path, model_type=None, output_path=None, num
 
     # Run inference
     print(f"\nRunning inference on {len(texts)} samples...")
+    print(f"Input tensors shape - input_ids: {input_ids.shape}, attention_mask: {attention_mask.shape}")
     with torch.no_grad():
         batch_size = 16
         all_probs = []
+        num_batches = (len(input_ids) + batch_size - 1) // batch_size
+        print(f"Processing {num_batches} batches with batch_size={batch_size}")
         for i in range(0, len(input_ids), batch_size):
             batch_input_ids = input_ids[i : i + batch_size]
             batch_attention_mask = attention_mask[i : i + batch_size]
@@ -857,6 +948,8 @@ def run_inference(weights_path, csv_path, model_type=None, output_path=None, num
         preds_proba = np.vstack(all_probs)
         preds = preds_proba.argmax(axis=1)
         confidence = preds_proba.max(axis=1)
+        print(f"Inference complete. Predictions shape: {preds.shape}, probabilities shape: {preds_proba.shape}")
+        print(f"Confidence range: [{confidence.min():.4f}, {confidence.max():.4f}], mean: {confidence.mean():.4f}")
 
     # Create output dataframe
     output_df = df.copy()
@@ -890,12 +983,28 @@ def run_inference(weights_path, csv_path, model_type=None, output_path=None, num
 
 if __name__ == "__main__":
     print("\n" + "=" * 70)
+    print("Starting Emotion Detection Pipeline")
+    print("=" * 70)
+    print(f"Configuration:")
+    print(f"  TRAIN_FILE: {TRAIN_FILE}")
+    print(f"  VALIDATION_FILE: {VALIDATION_FILE}")
+    print(f"  TEST_FILE: {TEST_FILE}")
+    print(f"  RESULTS_FOLDER: {RESULTS_FOLDER}")
+    print(f"  SAVE_MODELS_FOLDER: {SAVE_MODELS_FOLDER}")
+    print(f"  MAX_LENGTH: {MAX_LENGTH}")
+    print(f"  PARAM_GRID: {PARAM_GRID}")
+    
     # Load data
     train_texts, train_labels = load_data(TRAIN_FILE, "Training Data")
     val_texts, val_labels = load_data(VALIDATION_FILE, "Validation Data")
 
     num_classes = len(np.unique(train_labels))
     class_names = ["sadness", "joy", "love", "anger", "fear", "suprise"]
+    print(f"\nNumber of classes: {num_classes}")
+    print(f"Class names: {class_names}")
+    
+    if len(class_names) != num_classes:
+        print(f"Warning: Number of class names ({len(class_names)}) doesn't match num_classes ({num_classes})")
 
     # Prepare BERT data
     print("\n" + "=" * 70)
@@ -903,8 +1012,12 @@ if __name__ == "__main__":
     print("=" * 70)
     X_train_bert = prepare_model_data(train_texts, train_labels, "bert", BERT_MODEL_NAME, MAX_LENGTH)
     X_val_bert = prepare_model_data(val_texts, val_labels, "bert", BERT_MODEL_NAME, MAX_LENGTH)
+    print(f"BERT data preparation complete")
+    print(f"X_train_bert keys: {list(X_train_bert.keys())}")
+    print(f"X_val_bert keys: {list(X_val_bert.keys())}")
 
     # Run BERT hyperparameter search
+    print(f"\nStarting BERT hyperparameter search...")
     hp_summary_bert = hyperparameter_search(
         model_type="bert",
         X_train=X_train_bert,
@@ -920,7 +1033,9 @@ if __name__ == "__main__":
     )
 
     # Evaluate best BERT model
+    print(f"\nEvaluating best BERT model...")
     bert_eval = evaluate_best_model("bert", hp_summary_bert, X_val_bert, val_labels, class_names)
+    print(f"BERT evaluation complete")
 
     # ============================================================================
     # ELECTRA MODEL TRAINING
@@ -932,8 +1047,10 @@ if __name__ == "__main__":
     # Prepare ELECTRA data
     X_train_electra = prepare_model_data(train_texts, train_labels, "electra", ELECTRA_MODEL_NAME, MAX_LENGTH)
     X_val_electra = prepare_model_data(val_texts, val_labels, "electra", ELECTRA_MODEL_NAME, MAX_LENGTH)
+    print(f"ELECTRA data preparation complete")
 
     # Run ELECTRA hyperparameter search
+    print(f"\nStarting ELECTRA hyperparameter search...")
     hp_summary_electra = hyperparameter_search(
         model_type="electra",
         X_train=X_train_electra,
@@ -949,7 +1066,9 @@ if __name__ == "__main__":
     )
 
     # Evaluate best ELECTRA model
+    print(f"\nEvaluating best ELECTRA model...")
     electra_eval = evaluate_best_model("electra", hp_summary_electra, X_val_electra, val_labels, class_names)
+    print(f"ELECTRA evaluation complete")
 
     # ============================================================================
     # ROBERTA MODEL TRAINING
@@ -961,8 +1080,10 @@ if __name__ == "__main__":
     # Prepare RoBERTa data
     X_train_roberta = prepare_model_data(train_texts, train_labels, "roberta", ROBERTA_MODEL_NAME, MAX_LENGTH)
     X_val_roberta = prepare_model_data(val_texts, val_labels, "roberta", ROBERTA_MODEL_NAME, MAX_LENGTH)
+    print(f"RoBERTa data preparation complete")
 
     # Run RoBERTa hyperparameter search
+    print(f"\nStarting RoBERTa hyperparameter search...")
     hp_summary_roberta = hyperparameter_search(
         model_type="roberta",
         X_train=X_train_roberta,
@@ -978,7 +1099,9 @@ if __name__ == "__main__":
     )
 
     # Evaluate best RoBERTa model
+    print(f"\nEvaluating best RoBERTa model...")
     roberta_eval = evaluate_best_model("roberta", hp_summary_roberta, X_val_roberta, val_labels, class_names)
+    print(f"RoBERTa evaluation complete")
 
     # ============================================================================
     # MODEL COMPARISON
@@ -986,8 +1109,12 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("Model Comparison Summary")
     print("=" * 70)
+    print("Collecting results from all models...")
 
     comparison_results = []
+    print(f"BERT summary available: {hp_summary_bert is not None and hp_summary_bert.get('best_model_info') is not None}")
+    print(f"ELECTRA summary available: {hp_summary_electra is not None and hp_summary_electra.get('best_model_info') is not None}")
+    print(f"RoBERTa summary available: {hp_summary_roberta is not None and hp_summary_roberta.get('best_model_info') is not None}")
 
     if hp_summary_bert and hp_summary_bert.get("best_model_info"):
         bert_info = hp_summary_bert["best_model_info"]
@@ -1094,6 +1221,10 @@ if __name__ == "__main__":
     # ============================================================================
     # TEST PREDICTIONS
     # ============================================================================
+    print(f"\nChecking if test predictions should be generated...")
+    print(f"Comparison results available: {len(comparison_results) > 0}")
+    print(f"TEST_FILE exists: {os.path.exists(TEST_FILE) if TEST_FILE else False}")
+    
     if comparison_results and os.path.exists(TEST_FILE):
         print("\n" + "=" * 70)
         print("Generating Test Predictions with Best Model")
@@ -1104,6 +1235,9 @@ if __name__ == "__main__":
         best_model_name = best_result["model"]
         best_model_type = best_model_name.lower()
         print(f"\nUsing {best_model_name} model (val_accuracy: {best_result['val_accuracy']:.4f})")
+        print(f"Best model path: {best_result['model_path']}")
+    else:
+        print("Skipping test predictions (no comparison results or test file not found)")
 
         # Load test data
         test_df = pd.read_csv(TEST_FILE)
@@ -1155,3 +1289,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("Pipeline Complete!")
     print("=" * 70)
+    print(f"Results saved to: {RESULTS_FOLDER}")
+    print(f"Models saved to: {SAVE_MODELS_FOLDER}")
+    end_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    print(f"Pipeline finished at: {end_time}")
