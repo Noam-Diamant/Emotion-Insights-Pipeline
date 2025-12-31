@@ -638,7 +638,7 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
             # Collect predictions and probabilities for metrics
             train_all_preds.extend(predicted.cpu().numpy())
             train_all_labels.extend(batch_labels.cpu().numpy())
-            train_all_probs.append(torch.softmax(outputs, dim=1).cpu().numpy())
+            train_all_probs.append(torch.softmax(outputs, dim=1).detach().cpu().numpy())
             
             if batch_idx == 0:
                 print(f"  First batch - loss: {loss.item():.4f}, batch_size: {batch_labels.size(0)}")
@@ -685,7 +685,7 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
                 # Collect predictions and probabilities for metrics
                 val_all_preds.extend(predicted.cpu().numpy())
                 val_all_labels.extend(batch_labels.cpu().numpy())
-                val_all_probs.append(torch.softmax(outputs, dim=1).cpu().numpy())
+                val_all_probs.append(torch.softmax(outputs, dim=1).detach().cpu().numpy())
 
         val_loss /= len(val_loader)
         val_acc = val_correct / val_total
