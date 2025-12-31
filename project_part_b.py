@@ -26,6 +26,7 @@ from sklearn.metrics import (
     f1_score,
     precision_score,
     recall_score,
+    roc_auc_score,
 )
 from torch.optim import AdamW
 from torch.utils.data import DataLoader, TensorDataset
@@ -206,10 +207,10 @@ def preprocess_text(text):
 
 def plot_history(history, title="Training History"):
     """
-    Plot training/validation loss and accuracy from training history.
+    Plot training/validation metrics from training history.
 
     Args:
-        history: Dictionary with 'loss', 'accuracy', 'val_loss', 'val_accuracy' keys
+        history: Dictionary with metrics keys (loss, accuracy, precision, recall, f1, auc_roc, etc.)
         title: Title for the overall figure
     """
     # Handle both PyTorch dict and TensorFlow History object
@@ -219,31 +220,92 @@ def plot_history(history, title="Training History"):
         val_acc = history.history.get("val_accuracy", history.history.get("val_acc"))
         loss = history.history["loss"]
         val_loss = history.history["val_loss"]
+        precision = history.history.get("precision", [])
+        val_precision = history.history.get("val_precision", [])
+        recall = history.history.get("recall", [])
+        val_recall = history.history.get("val_recall", [])
+        f1 = history.history.get("f1", [])
+        val_f1 = history.history.get("val_f1", [])
+        auc_roc = history.history.get("auc_roc", [])
+        val_auc_roc = history.history.get("val_auc_roc", [])
     else:
         # PyTorch dictionary
         acc = history.get("accuracy", history.get("acc"))
         val_acc = history.get("val_accuracy", history.get("val_acc"))
         loss = history["loss"]
         val_loss = history["val_loss"]
+        precision = history.get("precision", [])
+        val_precision = history.get("val_precision", [])
+        recall = history.get("recall", [])
+        val_recall = history.get("val_recall", [])
+        f1 = history.get("f1", [])
+        val_f1 = history.get("val_f1", [])
+        auc_roc = history.get("auc_roc", [])
+        val_auc_roc = history.get("val_auc_roc", [])
 
     epochs = range(1, len(loss) + 1)
 
-    plt.figure(figsize=(12, 5))
-    plt.subplot(1, 2, 1)
-    plt.plot(epochs, loss, "b-", label="Training loss")
-    plt.plot(epochs, val_loss, "r--", label="Validation loss")
-    plt.title(f"{title} — Loss")
-    plt.xlabel("Epochs")
-    plt.ylabel("Loss")
-    plt.legend()
+    # Create a figure with multiple subplots
+    fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+    fig.suptitle(title, fontsize=16)
 
-    plt.subplot(1, 2, 2)
-    plt.plot(epochs, acc, "b-", label="Training acc")
-    plt.plot(epochs, val_acc, "r--", label="Validation acc")
-    plt.title(f"{title} — Accuracy")
-    plt.xlabel("Epochs")
-    plt.ylabel("Accuracy")
-    plt.legend()
+    # Loss
+    axes[0, 0].plot(epochs, loss, "b-", label="Training loss")
+    axes[0, 0].plot(epochs, val_loss, "r--", label="Validation loss")
+    axes[0, 0].set_title("Loss")
+    axes[0, 0].set_xlabel("Epochs")
+    axes[0, 0].set_ylabel("Loss")
+    axes[0, 0].legend()
+    axes[0, 0].grid(True, alpha=0.3)
+
+    # Accuracy
+    axes[0, 1].plot(epochs, acc, "b-", label="Training accuracy")
+    axes[0, 1].plot(epochs, val_acc, "r--", label="Validation accuracy")
+    axes[0, 1].set_title("Accuracy")
+    axes[0, 1].set_xlabel("Epochs")
+    axes[0, 1].set_ylabel("Accuracy")
+    axes[0, 1].legend()
+    axes[0, 1].grid(True, alpha=0.3)
+
+    # Precision
+    if precision and val_precision:
+        axes[0, 2].plot(epochs, precision, "b-", label="Training precision")
+        axes[0, 2].plot(epochs, val_precision, "r--", label="Validation precision")
+        axes[0, 2].set_title("Precision (Macro)")
+        axes[0, 2].set_xlabel("Epochs")
+        axes[0, 2].set_ylabel("Precision")
+        axes[0, 2].legend()
+        axes[0, 2].grid(True, alpha=0.3)
+
+    # Recall
+    if recall and val_recall:
+        axes[1, 0].plot(epochs, recall, "b-", label="Training recall")
+        axes[1, 0].plot(epochs, val_recall, "r--", label="Validation recall")
+        axes[1, 0].set_title("Recall (Macro)")
+        axes[1, 0].set_xlabel("Epochs")
+        axes[1, 0].set_ylabel("Recall")
+        axes[1, 0].legend()
+        axes[1, 0].grid(True, alpha=0.3)
+
+    # F1 Score
+    if f1 and val_f1:
+        axes[1, 1].plot(epochs, f1, "b-", label="Training F1")
+        axes[1, 1].plot(epochs, val_f1, "r--", label="Validation F1")
+        axes[1, 1].set_title("F1 Score (Macro)")
+        axes[1, 1].set_xlabel("Epochs")
+        axes[1, 1].set_ylabel("F1 Score")
+        axes[1, 1].legend()
+        axes[1, 1].grid(True, alpha=0.3)
+
+    # AUC-ROC
+    if auc_roc and val_auc_roc:
+        axes[1, 2].plot(epochs, auc_roc, "b-", label="Training AUC-ROC")
+        axes[1, 2].plot(epochs, val_auc_roc, "r--", label="Validation AUC-ROC")
+        axes[1, 2].set_title("AUC-ROC (Macro)")
+        axes[1, 2].set_xlabel("Epochs")
+        axes[1, 2].set_ylabel("AUC-ROC")
+        axes[1, 2].legend()
+        axes[1, 2].grid(True, alpha=0.3)
 
     fname = f"{title.replace(' ', '_').lower()}.png"
     plt.tight_layout()
@@ -524,7 +586,20 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
     # Training history
-    history = {"loss": [], "accuracy": [], "val_loss": [], "val_accuracy": []}
+    history = {
+        "loss": [],
+        "accuracy": [],
+        "precision": [],
+        "recall": [],
+        "f1": [],
+        "auc_roc": [],
+        "val_loss": [],
+        "val_accuracy": [],
+        "val_precision": [],
+        "val_recall": [],
+        "val_f1": [],
+        "val_auc_roc": [],
+    }
 
     # Early stopping variables
     best_val_loss = float("inf")
@@ -540,6 +615,9 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
         train_loss = 0.0
         train_correct = 0
         train_total = 0
+        train_all_preds = []
+        train_all_labels = []
+        train_all_probs = []
 
         for batch_idx, (batch_input_ids, batch_attention_mask, batch_labels) in enumerate(train_loader):
             batch_input_ids = batch_input_ids.to(device)
@@ -557,18 +635,38 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
             train_total += batch_labels.size(0)
             train_correct += (predicted == batch_labels).sum().item()
             
+            # Collect predictions and probabilities for metrics
+            train_all_preds.extend(predicted.cpu().numpy())
+            train_all_labels.extend(batch_labels.cpu().numpy())
+            train_all_probs.append(torch.softmax(outputs, dim=1).cpu().numpy())
+            
             if batch_idx == 0:
                 print(f"  First batch - loss: {loss.item():.4f}, batch_size: {batch_labels.size(0)}")
 
         train_loss /= len(train_loader)
         train_acc = train_correct / train_total
-        print(f"  Train - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, correct: {train_correct}/{train_total}")
+        
+        # Calculate additional metrics for training
+        train_all_probs = np.vstack(train_all_probs)
+        train_precision = precision_score(train_all_labels, train_all_preds, average="macro", zero_division=0)
+        train_recall = recall_score(train_all_labels, train_all_preds, average="macro", zero_division=0)
+        train_f1 = f1_score(train_all_labels, train_all_preds, average="macro", zero_division=0)
+        try:
+            train_auc_roc = roc_auc_score(train_all_labels, train_all_probs, multi_class="ovr", average="macro")
+        except Exception as e:
+            print(f"  Warning: Could not calculate training AUC-ROC: {e}")
+            train_auc_roc = 0.0
+        
+        print(f"  Train - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, precision: {train_precision:.4f}, recall: {train_recall:.4f}, f1: {train_f1:.4f}, auc_roc: {train_auc_roc:.4f}")
 
         # Validation phase
         model.eval()
         val_loss = 0.0
         val_correct = 0
         val_total = 0
+        val_all_preds = []
+        val_all_labels = []
+        val_all_probs = []
 
         with torch.no_grad():
             for batch_input_ids, batch_attention_mask, batch_labels in val_loader:
@@ -583,18 +681,44 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
                 _, predicted = torch.max(outputs, 1)
                 val_total += batch_labels.size(0)
                 val_correct += (predicted == batch_labels).sum().item()
+                
+                # Collect predictions and probabilities for metrics
+                val_all_preds.extend(predicted.cpu().numpy())
+                val_all_labels.extend(batch_labels.cpu().numpy())
+                val_all_probs.append(torch.softmax(outputs, dim=1).cpu().numpy())
 
         val_loss /= len(val_loader)
         val_acc = val_correct / val_total
-        print(f"  Val   - loss: {val_loss:.4f}, accuracy: {val_acc:.4f}, correct: {val_correct}/{val_total}")
+        
+        # Calculate additional metrics for validation
+        val_all_probs = np.vstack(val_all_probs)
+        val_precision = precision_score(val_all_labels, val_all_preds, average="macro", zero_division=0)
+        val_recall = recall_score(val_all_labels, val_all_preds, average="macro", zero_division=0)
+        val_f1 = f1_score(val_all_labels, val_all_preds, average="macro", zero_division=0)
+        try:
+            val_auc_roc = roc_auc_score(val_all_labels, val_all_probs, multi_class="ovr", average="macro")
+        except Exception as e:
+            print(f"  Warning: Could not calculate validation AUC-ROC: {e}")
+            val_auc_roc = 0.0
+        
+        print(f"  Val   - loss: {val_loss:.4f}, accuracy: {val_acc:.4f}, precision: {val_precision:.4f}, recall: {val_recall:.4f}, f1: {val_f1:.4f}, auc_roc: {val_auc_roc:.4f}")
 
         # Update history
         history["loss"].append(train_loss)
         history["accuracy"].append(train_acc)
+        history["precision"].append(train_precision)
+        history["recall"].append(train_recall)
+        history["f1"].append(train_f1)
+        history["auc_roc"].append(train_auc_roc)
         history["val_loss"].append(val_loss)
         history["val_accuracy"].append(val_acc)
+        history["val_precision"].append(val_precision)
+        history["val_recall"].append(val_recall)
+        history["val_f1"].append(val_f1)
+        history["val_auc_roc"].append(val_auc_roc)
 
-        print(f"Epoch {epoch + 1}/{epochs} - loss: {train_loss:.4f} - accuracy: {train_acc:.4f} - val_loss: {val_loss:.4f} - val_accuracy: {val_acc:.4f}")
+        print(f"Epoch {epoch + 1}/{epochs} - loss: {train_loss:.4f} - acc: {train_acc:.4f} - prec: {train_precision:.4f} - rec: {train_recall:.4f} - f1: {train_f1:.4f} - auc: {train_auc_roc:.4f}")
+        print(f"         Val    - loss: {val_loss:.4f} - acc: {val_acc:.4f} - prec: {val_precision:.4f} - rec: {val_recall:.4f} - f1: {val_f1:.4f} - auc: {val_auc_roc:.4f}")
 
         # Early stopping
         if val_loss < best_val_loss:
@@ -688,7 +812,13 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         model_train_time = time.time() - model_start_time
 
         val_acc = max(history["val_accuracy"])
+        val_precision = max(history.get("val_precision", [0]))
+        val_recall = max(history.get("val_recall", [0]))
+        val_f1 = max(history.get("val_f1", [0]))
+        val_auc_roc = max(history.get("val_auc_roc", [0]))
+        
         print(f"Finished training. Best val_accuracy: {val_acc:.4f}")
+        print(f"Best val_precision: {val_precision:.4f}, val_recall: {val_recall:.4f}, val_f1: {val_f1:.4f}, val_auc_roc: {val_auc_roc:.4f}")
         print(f"Training time: {model_train_time:.2f} seconds ({model_train_time / 60:.2f} minutes)")
 
         os.makedirs(SAVE_MODELS_FOLDER, exist_ok=True)
@@ -702,6 +832,10 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         result = {
             "params": params,
             "val_accuracy": float(val_acc),
+            "val_precision": float(val_precision),
+            "val_recall": float(val_recall),
+            "val_f1": float(val_f1),
+            "val_auc_roc": float(val_auc_roc),
             "model_path": model_path,
             "history_keys": list(history.keys()),
             "training_time_seconds": float(model_train_time),
