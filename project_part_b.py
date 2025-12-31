@@ -379,11 +379,11 @@ class TransformerClassifier(nn.Module):
         # Load pretrained transformer
         print(f"Loading pretrained {model_type.upper()} model from {model_name}...")
         if model_type == "bert":
-            self.transformer = BertModel.from_pretrained(model_name)
+            self.transformer = BertModel.from_pretrained(model_name, use_safetensors=True)
         elif model_type == "electra":
-            self.transformer = ElectraModel.from_pretrained(model_name)
+            self.transformer = ElectraModel.from_pretrained(model_name, use_safetensors=True)
         elif model_type == "roberta":
-            self.transformer = RobertaModel.from_pretrained(model_name)
+            self.transformer = RobertaModel.from_pretrained(model_name, use_safetensors=True)
         else:
             raise ValueError(f"Unknown model_type: {model_type}")
         print(f"{model_type.upper()} base model loaded successfully")
