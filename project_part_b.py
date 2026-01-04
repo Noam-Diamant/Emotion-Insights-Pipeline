@@ -21,12 +21,12 @@ import torch
 import torch.nn as nn
 from sklearn.metrics import (
     accuracy_score,
+    average_precision_score,
     classification_report,
     confusion_matrix,
     f1_score,
     precision_score,
     recall_score,
-    roc_auc_score,
 )
 from torch.optim import AdamW
 from torch.utils.data import DataLoader, TensorDataset
@@ -210,7 +210,7 @@ def plot_history(history, title="Training History"):
     Plot training/validation metrics from training history.
 
     Args:
-        history: Dictionary with metrics keys (loss, accuracy, precision, recall, f1, auc_roc, etc.)
+        history: Dictionary with metrics keys (loss, accuracy, precision, recall, f1, auc_pr, etc.)
         title: Title for the overall figure
     """
     # Handle both PyTorch dict and TensorFlow History object
@@ -226,8 +226,8 @@ def plot_history(history, title="Training History"):
         val_recall = history.history.get("val_recall", [])
         f1 = history.history.get("f1", [])
         val_f1 = history.history.get("val_f1", [])
-        auc_roc = history.history.get("auc_roc", [])
-        val_auc_roc = history.history.get("val_auc_roc", [])
+        auc_pr = history.history.get("auc_pr", [])
+        val_auc_pr = history.history.get("val_auc_pr", [])
     else:
         # PyTorch dictionary
         acc = history.get("accuracy", history.get("acc"))
@@ -240,8 +240,8 @@ def plot_history(history, title="Training History"):
         val_recall = history.get("val_recall", [])
         f1 = history.get("f1", [])
         val_f1 = history.get("val_f1", [])
-        auc_roc = history.get("auc_roc", [])
-        val_auc_roc = history.get("val_auc_roc", [])
+        auc_pr = history.get("auc_pr", [])
+        val_auc_pr = history.get("val_auc_pr", [])
 
     epochs = range(1, len(loss) + 1)
 
@@ -297,13 +297,13 @@ def plot_history(history, title="Training History"):
         axes[1, 1].legend()
         axes[1, 1].grid(True, alpha=0.3)
 
-    # AUC-ROC
-    if auc_roc and val_auc_roc:
-        axes[1, 2].plot(epochs, auc_roc, "b-", label="Training AUC-ROC")
-        axes[1, 2].plot(epochs, val_auc_roc, "r--", label="Validation AUC-ROC")
-        axes[1, 2].set_title("AUC-ROC (Macro)")
+    # AUC-PR
+    if auc_pr and val_auc_pr:
+        axes[1, 2].plot(epochs, auc_pr, "b-", label="Training AUC-PR")
+        axes[1, 2].plot(epochs, val_auc_pr, "r--", label="Validation AUC-PR")
+        axes[1, 2].set_title("AUC-PR (Macro)")
         axes[1, 2].set_xlabel("Epochs")
-        axes[1, 2].set_ylabel("AUC-ROC")
+        axes[1, 2].set_ylabel("AUC-PR")
         axes[1, 2].legend()
         axes[1, 2].grid(True, alpha=0.3)
 
@@ -592,13 +592,13 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
         "precision": [],
         "recall": [],
         "f1": [],
-        "auc_roc": [],
+        "auc_pr": [],
         "val_loss": [],
         "val_accuracy": [],
         "val_precision": [],
         "val_recall": [],
         "val_f1": [],
-        "val_auc_roc": [],
+        "val_auc_pr": [],
     }
 
     # Early stopping variables
@@ -652,12 +652,12 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
         train_recall = recall_score(train_all_labels, train_all_preds, average="macro", zero_division=0)
         train_f1 = f1_score(train_all_labels, train_all_preds, average="macro", zero_division=0)
         try:
-            train_auc_roc = roc_auc_score(train_all_labels, train_all_probs, multi_class="ovr", average="macro")
+            train_auc_pr = average_precision_score(train_all_labels, train_all_probs, average="macro")
         except Exception as e:
-            print(f"  Warning: Could not calculate training AUC-ROC: {e}")
-            train_auc_roc = 0.0
+            print(f"  Warning: Could not calculate training AUC-PR: {e}")
+            train_auc_pr = 0.0
         
-        print(f"  Train - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, precision: {train_precision:.4f}, recall: {train_recall:.4f}, f1: {train_f1:.4f}, auc_roc: {train_auc_roc:.4f}")
+        print(f"  Train - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, precision: {train_precision:.4f}, recall: {train_recall:.4f}, f1: {train_f1:.4f}, auc_pr: {train_auc_pr:.4f}")
 
         # Validation phase
         model.eval()
@@ -696,12 +696,12 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
         val_recall = recall_score(val_all_labels, val_all_preds, average="macro", zero_division=0)
         val_f1 = f1_score(val_all_labels, val_all_preds, average="macro", zero_division=0)
         try:
-            val_auc_roc = roc_auc_score(val_all_labels, val_all_probs, multi_class="ovr", average="macro")
+            val_auc_pr = average_precision_score(val_all_labels, val_all_probs, average="macro")
         except Exception as e:
-            print(f"  Warning: Could not calculate validation AUC-ROC: {e}")
-            val_auc_roc = 0.0
+            print(f"  Warning: Could not calculate validation AUC-PR: {e}")
+            val_auc_pr = 0.0
         
-        print(f"  Val   - loss: {val_loss:.4f}, accuracy: {val_acc:.4f}, precision: {val_precision:.4f}, recall: {val_recall:.4f}, f1: {val_f1:.4f}, auc_roc: {val_auc_roc:.4f}")
+        print(f"  Val   - loss: {val_loss:.4f}, accuracy: {val_acc:.4f}, precision: {val_precision:.4f}, recall: {val_recall:.4f}, f1: {val_f1:.4f}, auc_pr: {val_auc_pr:.4f}")
 
         # Update history
         history["loss"].append(train_loss)
@@ -709,16 +709,16 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
         history["precision"].append(train_precision)
         history["recall"].append(train_recall)
         history["f1"].append(train_f1)
-        history["auc_roc"].append(train_auc_roc)
+        history["auc_pr"].append(train_auc_pr)
         history["val_loss"].append(val_loss)
         history["val_accuracy"].append(val_acc)
         history["val_precision"].append(val_precision)
         history["val_recall"].append(val_recall)
         history["val_f1"].append(val_f1)
-        history["val_auc_roc"].append(val_auc_roc)
+        history["val_auc_pr"].append(val_auc_pr)
 
-        print(f"Epoch {epoch + 1}/{epochs} - loss: {train_loss:.4f} - acc: {train_acc:.4f} - prec: {train_precision:.4f} - rec: {train_recall:.4f} - f1: {train_f1:.4f} - auc: {train_auc_roc:.4f}")
-        print(f"         Val    - loss: {val_loss:.4f} - acc: {val_acc:.4f} - prec: {val_precision:.4f} - rec: {val_recall:.4f} - f1: {val_f1:.4f} - auc: {val_auc_roc:.4f}")
+        print(f"Epoch {epoch + 1}/{epochs} - loss: {train_loss:.4f} - acc: {train_acc:.4f} - prec: {train_precision:.4f} - rec: {train_recall:.4f} - f1: {train_f1:.4f} - auc_pr: {train_auc_pr:.4f}")
+        print(f"         Val    - loss: {val_loss:.4f} - acc: {val_acc:.4f} - prec: {val_precision:.4f} - rec: {val_recall:.4f} - f1: {val_f1:.4f} - auc_pr: {val_auc_pr:.4f}")
 
         # Early stopping
         if val_loss < best_val_loss:
@@ -815,10 +815,10 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         val_precision = max(history.get("val_precision", [0]))
         val_recall = max(history.get("val_recall", [0]))
         val_f1 = max(history.get("val_f1", [0]))
-        val_auc_roc = max(history.get("val_auc_roc", [0]))
+        val_auc_pr = max(history.get("val_auc_pr", [0]))
         
         print(f"Finished training. Best val_accuracy: {val_acc:.4f}")
-        print(f"Best val_precision: {val_precision:.4f}, val_recall: {val_recall:.4f}, val_f1: {val_f1:.4f}, val_auc_roc: {val_auc_roc:.4f}")
+        print(f"Best val_precision: {val_precision:.4f}, val_recall: {val_recall:.4f}, val_f1: {val_f1:.4f}, val_auc_pr: {val_auc_pr:.4f}")
         print(f"Training time: {model_train_time:.2f} seconds ({model_train_time / 60:.2f} minutes)")
 
         os.makedirs(SAVE_MODELS_FOLDER, exist_ok=True)
@@ -835,7 +835,7 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
             "val_precision": float(val_precision),
             "val_recall": float(val_recall),
             "val_f1": float(val_f1),
-            "val_auc_roc": float(val_auc_roc),
+            "val_auc_pr": float(val_auc_pr),
             "model_path": model_path,
             "history_keys": list(history.keys()),
             "training_time_seconds": float(model_train_time),
