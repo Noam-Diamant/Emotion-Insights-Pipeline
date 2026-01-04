@@ -57,6 +57,8 @@ MAX_LENGTH = 128
 PARAM_GRID = {
     "dropout_rate": [0.1, 0.3],
     "lr": [2e-5, 3e-5],
+    "batch_size": [16, 32],
+    "max_length": [128, 256],
 }
 
 
@@ -742,19 +744,18 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
     return history
 
 
-def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classes, model_name=None, max_length=MAX_LENGTH, param_grid=None, max_models=None, results_filename=None):
+def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, num_classes, model_name=None, param_grid=None, max_models=None, results_filename=None):
     """
     Run hyperparameter search for any transformer model.
 
     Args:
         model_type: Type of model ("bert", "electra", or "roberta")
-        X_train: Dictionary with 'input_ids' and 'attention_mask' for training
+        train_texts: Training text data (raw texts, not tokenized)
         y_train: Training labels
-        X_val: Dictionary with 'input_ids' and 'attention_mask' for validation
+        val_texts: Validation text data (raw texts, not tokenized)
         y_val: Validation labels
         num_classes: Number of output classes
         model_name: Name of pretrained model (if None, uses default for model_type)
-        max_length: Maximum sequence length
         param_grid: Dictionary of hyperparameters to search
         max_models: Maximum number of models to train
         results_filename: Filename to save results (if None, auto-generated)
@@ -763,8 +764,7 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         dict: Summary with best model info and all results
     """
     print(f"\nStarting hyperparameter search for {model_type.upper()}")
-    print(f"Input shapes - X_train: {X_train['input_ids'].shape}, y_train: {y_train.shape}")
-    print(f"Input shapes - X_val: {X_val['input_ids'].shape}, y_val: {y_val.shape}")
+    print(f"Training samples: {len(train_texts)}, Validation samples: {len(val_texts)}")
     print(f"Number of classes: {num_classes}")
     
     if param_grid is None:
@@ -773,10 +773,14 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
     if results_filename is None:
         results_filename = f"hp_results_{model_type}.json"
 
+    # Generate all combinations using itertools.product
+    param_names = list(param_grid.keys())
+    param_values = [param_grid[key] for key in param_names]
+    
     combos = []
-    for dr in param_grid.get("dropout_rate", [0.1]):
-        for lr in param_grid.get("lr", [2e-5]):
-            combos.append({"dropout_rate": dr, "lr": lr})
+    for combo_values in itertools.product(*param_values):
+        combo_dict = dict(zip(param_names, combo_values))
+        combos.append(combo_dict)
 
     print(f"Parameter grid: {param_grid}")
     print(f"{model_type.upper()} hyperparameter search will run {len(combos)} combos (max_models={max_models})")
@@ -801,13 +805,24 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         # Track training time for this model
         model_start_time = time.time()
 
-        model, optimizer, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, max_length=max_length, dropout_rate=float(params["dropout_rate"]), lr=float(params["lr"]))
+        # Extract parameters with defaults
+        dropout_rate = float(params.get("dropout_rate", 0.1))
+        lr = float(params.get("lr", 2e-5))
+        batch_size = int(params.get("batch_size", 16))
+        max_length = int(params.get("max_length", MAX_LENGTH))
+
+        # Prepare data for this max_length
+        print(f"Preparing data with max_length={max_length}...")
+        X_train = prepare_model_data(train_texts, y_train, model_type, model_name, max_length)
+        X_val = prepare_model_data(val_texts, y_val, model_type, model_name, max_length)
+
+        model, optimizer, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, max_length=max_length, dropout_rate=dropout_rate, lr=lr)
 
         # Calculate model size
         model_size_mb = sum(p.numel() for p in model.parameters()) * 4 / (1024 * 1024)
         total_params = sum(p.numel() for p in model.parameters())
 
-        history = train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs=3, batch_size=16, patience=3)
+        history = train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs=3, batch_size=batch_size, patience=3)
 
         model_train_time = time.time() - model_start_time
 
@@ -822,12 +837,22 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
         print(f"Training time: {model_train_time:.2f} seconds ({model_train_time / 60:.2f} minutes)")
 
         os.makedirs(SAVE_MODELS_FOLDER, exist_ok=True)
-        model_path = f"{SAVE_MODELS_FOLDER}/{model_type}_dr{params['dropout_rate']}_lr{params['lr']}.pt"
+        # Create model path with all parameters
+        param_parts = []
+        for k, v in sorted(params.items()):
+            if isinstance(v, float):
+                # Format float values, replacing . with p and e- with e
+                v_str = str(v).replace(".", "p").replace("-", "m").replace("e", "e")
+            else:
+                v_str = str(v)
+            param_parts.append(f"{k}{v_str}")
+        param_str = "_".join(param_parts)
+        model_path = f"{SAVE_MODELS_FOLDER}/{model_type}_{param_str}.pt"
         print(f"Saving model to {model_path}...")
         torch.save(model.state_dict(), model_path)
         print(f"Saved {model_type.upper()} model to {model_path}")
 
-        plot_history(history, title=f"{model_type.upper()}_dr{params['dropout_rate']}_lr{params['lr']}")
+        plot_history(history, title=f"{model_type.upper()}_{param_str}")
 
         result = {
             "params": params,
@@ -865,14 +890,14 @@ def hyperparameter_search(model_type, X_train, y_train, X_val, y_val, num_classe
     return summary
 
 
-def evaluate_best_model(model_type, hp_summary, X_val, y_val, class_names):
+def evaluate_best_model(model_type, hp_summary, val_texts, y_val, class_names):
     """
     Evaluate the best model from hyperparameter search.
 
     Args:
         model_type: Type of model ("bert", "electra", or "roberta")
         hp_summary: Hyperparameter search summary dictionary
-        X_val: Validation data dictionary with 'input_ids' and 'attention_mask'
+        val_texts: Validation text data (raw texts, not tokenized)
         y_val: Validation labels
         class_names: List of class names
 
@@ -900,7 +925,12 @@ def evaluate_best_model(model_type, hp_summary, X_val, y_val, class_names):
     num_classes = len(class_names)
     print(f"Recreating model architecture: {model_type}, {num_classes} classes")
 
-    model, _, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, dropout_rate=best_params["dropout_rate"], lr=best_params["lr"])
+    # Extract parameters with defaults
+    dropout_rate = float(best_params.get("dropout_rate", 0.1))
+    lr = float(best_params.get("lr", 2e-5))
+    max_length = int(best_params.get("max_length", MAX_LENGTH))
+
+    model, _, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, dropout_rate=dropout_rate, lr=lr)
 
     # Load saved weights
     print(f"Loading weights from {best_model_path}...")
@@ -908,8 +938,9 @@ def evaluate_best_model(model_type, hp_summary, X_val, y_val, class_names):
     model.eval()
     print("Model weights loaded and set to eval mode")
 
-    # Prepare validation data
-    print(f"Preparing validation data tensors...")
+    # Prepare validation data using the best model's max_length
+    print(f"Preparing validation data with max_length={max_length}...")
+    X_val = prepare_model_data(val_texts, y_val, model_type, model_name, max_length)
     val_input_ids = torch.tensor(X_val["input_ids"], dtype=torch.long).to(device)
     val_attention_mask = torch.tensor(X_val["attention_mask"], dtype=torch.long).to(device)
     print(f"Validation data shape: {val_input_ids.shape}")
@@ -1140,101 +1171,81 @@ if __name__ == "__main__":
     if len(class_names) != num_classes:
         print(f"Warning: Number of class names ({len(class_names)}) doesn't match num_classes ({num_classes})")
 
-    # Prepare BERT data
-    print("\n" + "=" * 70)
-    print("PREPARING BERT DATA")
-    print("=" * 70)
-    X_train_bert = prepare_model_data(train_texts, train_labels, "bert", BERT_MODEL_NAME, MAX_LENGTH)
-    X_val_bert = prepare_model_data(val_texts, val_labels, "bert", BERT_MODEL_NAME, MAX_LENGTH)
-    print(f"BERT data preparation complete")
-    print(f"X_train_bert keys: {list(X_train_bert.keys())}")
-    print(f"X_val_bert keys: {list(X_val_bert.keys())}")
-
     # Run BERT hyperparameter search
+    print("\n" + "=" * 70)
+    print("BERT HYPERPARAMETER SEARCH")
+    print("=" * 70)
     print(f"\nStarting BERT hyperparameter search...")
     hp_summary_bert = hyperparameter_search(
         model_type="bert",
-        X_train=X_train_bert,
+        train_texts=train_texts,
         y_train=train_labels,
-        X_val=X_val_bert,
+        val_texts=val_texts,
         y_val=val_labels,
         num_classes=num_classes,
         model_name=BERT_MODEL_NAME,
-        max_length=MAX_LENGTH,
         param_grid=PARAM_GRID,
-        max_models=2,
+        max_models=None,  # Will train all combinations
         results_filename="hp_results_bert.json",
     )
 
     # Evaluate best BERT model
     print(f"\nEvaluating best BERT model...")
-    bert_eval = evaluate_best_model("bert", hp_summary_bert, X_val_bert, val_labels, class_names)
+    bert_eval = evaluate_best_model("bert", hp_summary_bert, val_texts, val_labels, class_names)
     print(f"BERT evaluation complete")
 
     # ============================================================================
     # ELECTRA MODEL TRAINING
     # ============================================================================
     print("\n" + "=" * 70)
-    print("Training ELECTRA Model")
+    print("ELECTRA HYPERPARAMETER SEARCH")
     print("=" * 70)
-
-    # Prepare ELECTRA data
-    X_train_electra = prepare_model_data(train_texts, train_labels, "electra", ELECTRA_MODEL_NAME, MAX_LENGTH)
-    X_val_electra = prepare_model_data(val_texts, val_labels, "electra", ELECTRA_MODEL_NAME, MAX_LENGTH)
-    print(f"ELECTRA data preparation complete")
 
     # Run ELECTRA hyperparameter search
     print(f"\nStarting ELECTRA hyperparameter search...")
     hp_summary_electra = hyperparameter_search(
         model_type="electra",
-        X_train=X_train_electra,
+        train_texts=train_texts,
         y_train=train_labels,
-        X_val=X_val_electra,
+        val_texts=val_texts,
         y_val=val_labels,
         num_classes=num_classes,
         model_name=ELECTRA_MODEL_NAME,
-        max_length=MAX_LENGTH,
         param_grid=PARAM_GRID,
-        max_models=2,
+        max_models=None,  # Will train all combinations
         results_filename="hp_results_electra.json",
     )
 
     # Evaluate best ELECTRA model
     print(f"\nEvaluating best ELECTRA model...")
-    electra_eval = evaluate_best_model("electra", hp_summary_electra, X_val_electra, val_labels, class_names)
+    electra_eval = evaluate_best_model("electra", hp_summary_electra, val_texts, val_labels, class_names)
     print(f"ELECTRA evaluation complete")
 
     # ============================================================================
     # ROBERTA MODEL TRAINING
     # ============================================================================
     print("\n" + "=" * 70)
-    print("Training RoBERTa Model")
+    print("ROBERTA HYPERPARAMETER SEARCH")
     print("=" * 70)
-
-    # Prepare RoBERTa data
-    X_train_roberta = prepare_model_data(train_texts, train_labels, "roberta", ROBERTA_MODEL_NAME, MAX_LENGTH)
-    X_val_roberta = prepare_model_data(val_texts, val_labels, "roberta", ROBERTA_MODEL_NAME, MAX_LENGTH)
-    print(f"RoBERTa data preparation complete")
 
     # Run RoBERTa hyperparameter search
     print(f"\nStarting RoBERTa hyperparameter search...")
     hp_summary_roberta = hyperparameter_search(
         model_type="roberta",
-        X_train=X_train_roberta,
+        train_texts=train_texts,
         y_train=train_labels,
-        X_val=X_val_roberta,
+        val_texts=val_texts,
         y_val=val_labels,
         num_classes=num_classes,
         model_name=ROBERTA_MODEL_NAME,
-        max_length=MAX_LENGTH,
         param_grid=PARAM_GRID,
-        max_models=2,
+        max_models=None,  # Will train all combinations
         results_filename="hp_results_roberta.json",
     )
 
     # Evaluate best RoBERTa model
     print(f"\nEvaluating best RoBERTa model...")
-    roberta_eval = evaluate_best_model("roberta", hp_summary_roberta, X_val_roberta, val_labels, class_names)
+    roberta_eval = evaluate_best_model("roberta", hp_summary_roberta, val_texts, val_labels, class_names)
     print(f"RoBERTa evaluation complete")
 
     # ============================================================================
@@ -1256,7 +1267,11 @@ if __name__ == "__main__":
             {
                 "model": "BERT",
                 "best_params": bert_info["params"],
-                "val_accuracy": bert_info["val_accuracy"],
+                "val_accuracy": bert_info.get("val_accuracy", 0),
+                "val_precision": bert_info.get("val_precision", 0),
+                "val_recall": bert_info.get("val_recall", 0),
+                "val_f1": bert_info.get("val_f1", 0),
+                "val_auc_pr": bert_info.get("val_auc_pr", 0),
                 "model_path": bert_info["model_path"],
                 "training_time_seconds": bert_info.get("training_time_seconds", 0),
                 "model_size_mb": bert_info.get("model_size_mb", 0),
@@ -1271,7 +1286,11 @@ if __name__ == "__main__":
             {
                 "model": "ELECTRA",
                 "best_params": electra_info["params"],
-                "val_accuracy": electra_info["val_accuracy"],
+                "val_accuracy": electra_info.get("val_accuracy", 0),
+                "val_precision": electra_info.get("val_precision", 0),
+                "val_recall": electra_info.get("val_recall", 0),
+                "val_f1": electra_info.get("val_f1", 0),
+                "val_auc_pr": electra_info.get("val_auc_pr", 0),
                 "model_path": electra_info["model_path"],
                 "training_time_seconds": electra_info.get("training_time_seconds", 0),
                 "model_size_mb": electra_info.get("model_size_mb", 0),
@@ -1286,7 +1305,11 @@ if __name__ == "__main__":
             {
                 "model": "RoBERTa",
                 "best_params": roberta_info["params"],
-                "val_accuracy": roberta_info["val_accuracy"],
+                "val_accuracy": roberta_info.get("val_accuracy", 0),
+                "val_precision": roberta_info.get("val_precision", 0),
+                "val_recall": roberta_info.get("val_recall", 0),
+                "val_f1": roberta_info.get("val_f1", 0),
+                "val_auc_pr": roberta_info.get("val_auc_pr", 0),
                 "model_path": roberta_info["model_path"],
                 "training_time_seconds": roberta_info.get("training_time_seconds", 0),
                 "model_size_mb": roberta_info.get("model_size_mb", 0),
@@ -1318,6 +1341,7 @@ if __name__ == "__main__":
     print("-" * 70)
     for i, result in enumerate(comparison_results, 1):
         print(f"{i}. {result['model']}: {result['val_accuracy']:.4f}")
+        print(f"   Metrics - Accuracy: {result.get('val_accuracy', 0):.4f}, Precision: {result.get('val_precision', 0):.4f}, Recall: {result.get('val_recall', 0):.4f}, F1: {result.get('val_f1', 0):.4f}, AUC-PR: {result.get('val_auc_pr', 0):.4f}")
         print(f"   Best params: {result['best_params']}")
         print(f"   Model size: {result['model_size_mb']:.2f} MB ({result['total_parameters']:,} parameters)")
         print(f"   Training time: {result['training_time_seconds']:.2f} seconds ({result['training_time_seconds'] / 60:.2f} minutes)")
@@ -1336,14 +1360,20 @@ if __name__ == "__main__":
         [
             {
                 "Model": r["model"],
-                "Validation Accuracy": r["val_accuracy"],
+                "Validation Accuracy": r.get("val_accuracy", 0),
+                "Validation Precision": r.get("val_precision", 0),
+                "Validation Recall": r.get("val_recall", 0),
+                "Validation F1": r.get("val_f1", 0),
+                "Validation AUC-PR": r.get("val_auc_pr", 0),
                 "Total Parameters": r["total_parameters"],
                 "Model Size (MB)": r["model_size_mb"],
                 "Training Time (seconds)": r["training_time_seconds"],
                 "Training Time (minutes)": r["training_time_seconds"] / 60,
                 "Total Search Time (minutes)": r["total_training_time"] / 60,
-                "Dropout Rate": r["best_params"]["dropout_rate"],
-                "Learning Rate": r["best_params"]["lr"],
+                "Dropout Rate": r["best_params"].get("dropout_rate", 0),
+                "Learning Rate": r["best_params"].get("lr", 0),
+                "Batch Size": r["best_params"].get("batch_size", 0),
+                "Max Length": r["best_params"].get("max_length", 0),
             }
             for r in comparison_results
         ]
