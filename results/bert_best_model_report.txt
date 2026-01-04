@@ -1,0 +1,45 @@
+Best BERT model path: ./hp_models/bert_dr0.1_lr3e-05.pt
+
+{
+  "params": {
+    "dropout_rate": 0.1,
+    "lr": 3e-05
+  },
+  "val_accuracy": 0.936,
+  "val_precision": 0.8951084758616564,
+  "val_recall": 0.9351394817905577,
+  "val_f1": 0.9117026222106072,
+  "val_auc_roc": 0.9977643037908219,
+  "model_path": "./hp_models/bert_dr0.1_lr3e-05.pt",
+  "history_keys": [
+    "loss",
+    "accuracy",
+    "precision",
+    "recall",
+    "f1",
+    "auc_roc",
+    "val_loss",
+    "val_accuracy",
+    "val_precision",
+    "val_recall",
+    "val_f1",
+    "val_auc_roc"
+  ],
+  "training_time_seconds": 514.2802777290344,
+  "model_size_mb": 418.0200424194336,
+  "total_parameters": 109581446
+}
+
+Validation Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.96      0.97       550
+         joy       0.99      0.91      0.95       704
+        love       0.80      0.98      0.88       178
+       anger       0.93      0.93      0.93       275
+        fear       0.86      0.93      0.90       212
+     suprise       0.81      0.88      0.84        81
+
+    accuracy                           0.94      2000
+   macro avg       0.90      0.93      0.91      2000
+weighted avg       0.94      0.94      0.94      2000

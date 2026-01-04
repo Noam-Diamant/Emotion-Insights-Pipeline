@@ -1,0 +1,93 @@
+{
+  "best_model_info": {
+    "params": {
+      "dropout_rate": 0.1,
+      "lr": 3e-05
+    },
+    "val_accuracy": 0.9235,
+    "val_precision": 0.87817129308051,
+    "val_recall": 0.9403102756149581,
+    "val_f1": 0.9012098675615188,
+    "val_auc_roc": 0.9961783831275973,
+    "model_path": "./hp_models/electra_dr0.1_lr3e-05.pt",
+    "history_keys": [
+      "loss",
+      "accuracy",
+      "precision",
+      "recall",
+      "f1",
+      "auc_roc",
+      "val_loss",
+      "val_accuracy",
+      "val_precision",
+      "val_recall",
+      "val_f1",
+      "val_auc_roc"
+    ],
+    "training_time_seconds": 182.4334716796875,
+    "model_size_mb": 51.562034606933594,
+    "total_parameters": 13516678
+  },
+  "all_results": [
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05
+      },
+      "val_accuracy": 0.919,
+      "val_precision": 0.875163798173359,
+      "val_recall": 0.9349024715666944,
+      "val_f1": 0.8998285128757894,
+      "val_auc_roc": 0.9948464393953901,
+      "model_path": "./hp_models/electra_dr0.1_lr2e-05.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_roc",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_roc"
+      ],
+      "training_time_seconds": 182.74943137168884,
+      "model_size_mb": 51.562034606933594,
+      "total_parameters": 13516678
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05
+      },
+      "val_accuracy": 0.9235,
+      "val_precision": 0.87817129308051,
+      "val_recall": 0.9403102756149581,
+      "val_f1": 0.9012098675615188,
+      "val_auc_roc": 0.9961783831275973,
+      "model_path": "./hp_models/electra_dr0.1_lr3e-05.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_roc",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_roc"
+      ],
+      "training_time_seconds": 182.4334716796875,
+      "model_size_mb": 51.562034606933594,
+      "total_parameters": 13516678
+    }
+  ],
+  "total_training_time_seconds": 367.89959192276,
+  "num_models_trained": 2
+}

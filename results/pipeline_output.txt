@@ -1,0 +1,843 @@
+
+======================================================================
+Starting Emotion Detection Pipeline
+======================================================================
+Configuration:
+  TRAIN_FILE: ./data/train.csv
+  VALIDATION_FILE: ./data/validation.csv
+  TEST_FILE: ./data/test.csv
+  RESULTS_FOLDER: ./results
+  SAVE_MODELS_FOLDER: ./hp_models
+  MAX_LENGTH: 128
+  PARAM_GRID: {'dropout_rate': [0.1, 0.3], 'lr': [2e-05, 3e-05]}
+======================================================================
+Loading Training Data
+======================================================================
+Reading file: ./data/train.csv
+File exists: True
+Loaded 16000 samples from ./data/train.csv
+Columns: ['text', 'label']
+DataFrame shape: (16000, 2)
+Using text column: 'text'
+Using label column: 'label'
+Texts dtype: object, shape: (16000,)
+Labels dtype: int64, shape: (16000,)
+Number of samples: 16000
+Number of unique emotions: 6
+Emotion distribution: [4666 5362 1304 2159 1937  572]
+Label range: [0, 5]
+======================================================================
+Loading Validation Data
+======================================================================
+Reading file: ./data/validation.csv
+File exists: True
+Loaded 2000 samples from ./data/validation.csv
+Columns: ['text', 'label']
+DataFrame shape: (2000, 2)
+Using text column: 'text'
+Using label column: 'label'
+Texts dtype: object, shape: (2000,)
+Labels dtype: int64, shape: (2000,)
+Number of samples: 2000
+Number of unique emotions: 6
+Emotion distribution: [550 704 178 275 212  81]
+Label range: [0, 5]
+
+Number of classes: 6
+Class names: ['sadness', 'joy', 'love', 'anger', 'fear', 'suprise']
+
+======================================================================
+PREPARING BERT DATA
+======================================================================
+
+Starting data preparation for BERT
+Input texts count: 16000
+Max length: 128
+Labels provided: True
+
+Preparing BERT data using bert-base-uncased...
+Loading tokenizer... (downloading if first time)
+BERT tokenizer loaded.
+Preprocessing 16000 texts...
+Preprocessing complete. Sample length range: [7, 303]
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (16000,), dtype: int64
+BERT data prepared. Input shape: (16000, 128)
+Input IDs dtype: int64, range: [0, 29610]
+Attention mask shape: (16000, 128)
+
+Starting data preparation for BERT
+Input texts count: 2000
+Max length: 128
+Labels provided: True
+
+Preparing BERT data using bert-base-uncased...
+Loading tokenizer... (downloading if first time)
+BERT tokenizer loaded.
+Preprocessing 2000 texts...
+Preprocessing complete. Sample length range: [11, 301]
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (2000,), dtype: int64
+BERT data prepared. Input shape: (2000, 128)
+Input IDs dtype: int64, range: [0, 29563]
+Attention mask shape: (2000, 128)
+BERT data preparation complete
+X_train_bert keys: ['input_ids', 'attention_mask', 'tokenizer', 'labels']
+X_val_bert keys: ['input_ids', 'attention_mask', 'tokenizer', 'labels']
+
+Starting BERT hyperparameter search...
+
+Starting hyperparameter search for BERT
+Input shapes - X_train: (16000, 128), y_train: (16000,)
+Input shapes - X_val: (2000, 128), y_val: (2000,)
+Number of classes: 6
+Parameter grid: {'dropout_rate': [0.1, 0.3], 'lr': [2e-05, 3e-05]}
+BERT hyperparameter search will run 4 combos (max_models=2)
+All parameter combinations: [{'dropout_rate': 0.1, 'lr': 2e-05}, {'dropout_rate': 0.1, 'lr': 3e-05}, {'dropout_rate': 0.3, 'lr': 2e-05}, {'dropout_rate': 0.3, 'lr': 3e-05}]
+Hyperparameter search started at 2025-12-31 16:53:43
+
+============================================================
+BERT Model 1/4 - params: {'dropout_rate': 0.1, 'lr': 2e-05}
+
+Building BERT model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=2e-05
+Building BERT model from bert-base-uncased...
+Initializing TransformerClassifier: type=bert, model_name=bert-base-uncased, num_classes=6, dropout_rate=0.1
+Loading pretrained BERT model from bert-base-uncased...
+BERT base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=2e-05
+BERT model built successfully!
+Model device: cuda
+Total parameters: 109,581,446
+Trainable parameters: 109,581,446
+Model size: 418.02 MB
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 3, Batch size: 16, Patience: 3
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Epoch 1/3
+  First batch - loss: 1.7547, batch_size: 16
+  Train - loss: 0.5566, accuracy: 0.8062, precision: 0.7439, recall: 0.8045, f1: 0.7683, auc_roc: 0.9708
+  Val   - loss: 0.2210, accuracy: 0.9145, precision: 0.8625, recall: 0.9326, f1: 0.8897, auc_roc: 0.9945
+Epoch 1/3 - loss: 0.5566 - acc: 0.8062 - prec: 0.7439 - rec: 0.8045 - f1: 0.7683 - auc: 0.9708
+         Val    - loss: 0.2210 - acc: 0.9145 - prec: 0.8625 - rec: 0.9326 - f1: 0.8897 - auc: 0.9945
+
+Epoch 2/3
+  First batch - loss: 0.1838, batch_size: 16
+  Train - loss: 0.1783, accuracy: 0.9338, precision: 0.8831, recall: 0.9416, f1: 0.9066, auc_roc: 0.9957
+  Val   - loss: 0.1612, accuracy: 0.9340, precision: 0.8901, recall: 0.9471, f1: 0.9137, auc_roc: 0.9970
+Epoch 2/3 - loss: 0.1783 - acc: 0.9338 - prec: 0.8831 - rec: 0.9416 - f1: 0.9066 - auc: 0.9957
+         Val    - loss: 0.1612 - acc: 0.9340 - prec: 0.8901 - rec: 0.9471 - f1: 0.9137 - auc: 0.9970
+
+Epoch 3/3
+  First batch - loss: 0.3030, batch_size: 16
+  Train - loss: 0.1290, accuracy: 0.9439, precision: 0.8944, recall: 0.9506, f1: 0.9170, auc_roc: 0.9977
+  Val   - loss: 0.1573, accuracy: 0.9320, precision: 0.8899, recall: 0.9262, f1: 0.9060, auc_roc: 0.9972
+Epoch 3/3 - loss: 0.1290 - acc: 0.9439 - prec: 0.8944 - rec: 0.9506 - f1: 0.9170 - auc: 0.9977
+         Val    - loss: 0.1573 - acc: 0.9320 - prec: 0.8899 - rec: 0.9262 - f1: 0.9060 - auc: 0.9972
+Restored best model weights (best_val_loss: 0.1573)
+Training completed. History contains 3 epochs
+Finished training. Best val_accuracy: 0.9340
+Best val_precision: 0.8901, val_recall: 0.9471, val_f1: 0.9137, val_auc_roc: 0.9972
+Training time: 516.57 seconds (8.61 minutes)
+Saving model to ./hp_models/bert_dr0.1_lr2e-05.pt...
+Saved BERT model to ./hp_models/bert_dr0.1_lr2e-05.pt
+Saved training plot: bert_dr0.1_lr2e-05.png
+Current best val_accuracy: -1.0000, this model: 0.9340
+New best model found! Val accuracy: 0.9340
+
+============================================================
+BERT Model 2/4 - params: {'dropout_rate': 0.1, 'lr': 3e-05}
+
+Building BERT model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05
+Building BERT model from bert-base-uncased...
+Initializing TransformerClassifier: type=bert, model_name=bert-base-uncased, num_classes=6, dropout_rate=0.1
+Loading pretrained BERT model from bert-base-uncased...
+BERT base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=3e-05
+BERT model built successfully!
+Model device: cuda
+Total parameters: 109,581,446
+Trainable parameters: 109,581,446
+Model size: 418.02 MB
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 3, Batch size: 16, Patience: 3
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Epoch 1/3
+  First batch - loss: 1.8445, batch_size: 16
+  Train - loss: 0.4881, accuracy: 0.8378, precision: 0.7775, recall: 0.8366, f1: 0.8006, auc_roc: 0.9764
+  Val   - loss: 0.2194, accuracy: 0.9170, precision: 0.8678, recall: 0.9320, f1: 0.8939, auc_roc: 0.9942
+Epoch 1/3 - loss: 0.4881 - acc: 0.8378 - prec: 0.7775 - rec: 0.8366 - f1: 0.8006 - auc: 0.9764
+         Val    - loss: 0.2194 - acc: 0.9170 - prec: 0.8678 - rec: 0.9320 - f1: 0.8939 - auc: 0.9942
+
+Epoch 2/3
+  First batch - loss: 0.1163, batch_size: 16
+  Train - loss: 0.1765, accuracy: 0.9322, precision: 0.8791, recall: 0.9384, f1: 0.9027, auc_roc: 0.9957
+  Val   - loss: 0.1942, accuracy: 0.9275, precision: 0.8819, recall: 0.9351, f1: 0.9019, auc_roc: 0.9963
+Epoch 2/3 - loss: 0.1765 - acc: 0.9322 - prec: 0.8791 - rec: 0.9384 - f1: 0.9027 - auc: 0.9957
+         Val    - loss: 0.1942 - acc: 0.9275 - prec: 0.8819 - rec: 0.9351 - f1: 0.9019 - auc: 0.9963
+
+Epoch 3/3
+  First batch - loss: 0.1468, batch_size: 16
+  Train - loss: 0.1467, accuracy: 0.9367, precision: 0.8855, recall: 0.9456, f1: 0.9095, auc_roc: 0.9972
+  Val   - loss: 0.1453, accuracy: 0.9360, precision: 0.8951, recall: 0.9330, f1: 0.9117, auc_roc: 0.9978
+Epoch 3/3 - loss: 0.1467 - acc: 0.9367 - prec: 0.8855 - rec: 0.9456 - f1: 0.9095 - auc: 0.9972
+         Val    - loss: 0.1453 - acc: 0.9360 - prec: 0.8951 - rec: 0.9330 - f1: 0.9117 - auc: 0.9978
+Restored best model weights (best_val_loss: 0.1453)
+Training completed. History contains 3 epochs
+Finished training. Best val_accuracy: 0.9360
+Best val_precision: 0.8951, val_recall: 0.9351, val_f1: 0.9117, val_auc_roc: 0.9978
+Training time: 514.28 seconds (8.57 minutes)
+Saving model to ./hp_models/bert_dr0.1_lr3e-05.pt...
+Saved BERT model to ./hp_models/bert_dr0.1_lr3e-05.pt
+Saved training plot: bert_dr0.1_lr3e-05.png
+Current best val_accuracy: 0.9340, this model: 0.9360
+New best model found! Val accuracy: 0.9360
+
+Hyperparameter search completed in 1035.96 seconds (17.27 minutes)
+Trained 2 models, best val_accuracy: 0.9360
+Saving summary to ./results/hp_results_bert.json...
+Saved BERT hyperparameter search summary to ./results/hp_results_bert.json
+
+Evaluating best BERT model...
+
+======================================================================
+Evaluating Best BERT Model
+======================================================================
+Loading best BERT model from ./hp_models/bert_dr0.1_lr3e-05.pt ...
+Best model params: {'dropout_rate': 0.1, 'lr': 3e-05}
+Best model path exists: True
+Recreating model architecture: bert, 6 classes
+
+Building BERT model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05
+Building BERT model from bert-base-uncased...
+Initializing TransformerClassifier: type=bert, model_name=bert-base-uncased, num_classes=6, dropout_rate=0.1
+Loading pretrained BERT model from bert-base-uncased...
+BERT base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=3e-05
+BERT model built successfully!
+Model device: cuda
+Total parameters: 109,581,446
+Trainable parameters: 109,581,446
+Model size: 418.02 MB
+Loading weights from ./hp_models/bert_dr0.1_lr3e-05.pt...
+Model weights loaded and set to eval mode
+Preparing validation data tensors...
+Validation data shape: torch.Size([2000, 128])
+Making predictions on 2000 samples...
+Processing 125 batches with batch_size=16
+Predictions shape: (2000,), probabilities shape: (2000, 6)
+Prediction range: [0, 5], unique predictions: 6
+
+BERT Validation Metrics:
+  Accuracy:  0.9360
+  Macro F1:  0.9117
+  Precision: 0.8951
+  Recall:    0.9330
+
+BERT Classification Report:
+
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.96      0.97       550
+         joy       0.99      0.91      0.95       704
+        love       0.80      0.98      0.88       178
+       anger       0.93      0.93      0.93       275
+        fear       0.86      0.93      0.90       212
+     suprise       0.81      0.88      0.84        81
+
+    accuracy                           0.94      2000
+   macro avg       0.90      0.93      0.91      2000
+weighted avg       0.94      0.94      0.94      2000
+
+Saved best BERT model report to ./results/bert_best_model_report.txt
+Saved confusion matrix plot: bert_confusion_matrix_(counts)_bert.png
+Saved confusion matrix plot: bert_confusion_matrix_(normalized)_bert.png
+BERT evaluation complete
+
+======================================================================
+Training ELECTRA Model
+======================================================================
+
+Starting data preparation for ELECTRA
+Input texts count: 16000
+Max length: 128
+Labels provided: True
+
+Preparing ELECTRA data using google/electra-small-discriminator...
+Loading tokenizer... (downloading if first time)
+ELECTRA tokenizer loaded.
+Preprocessing 16000 texts...
+Preprocessing complete. Sample length range: [7, 303]
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (16000,), dtype: int64
+ELECTRA data prepared. Input shape: (16000, 128)
+Input IDs dtype: int64, range: [0, 29610]
+Attention mask shape: (16000, 128)
+
+Starting data preparation for ELECTRA
+Input texts count: 2000
+Max length: 128
+Labels provided: True
+
+Preparing ELECTRA data using google/electra-small-discriminator...
+Loading tokenizer... (downloading if first time)
+ELECTRA tokenizer loaded.
+Preprocessing 2000 texts...
+Preprocessing complete. Sample length range: [11, 301]
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (2000,), dtype: int64
+ELECTRA data prepared. Input shape: (2000, 128)
+Input IDs dtype: int64, range: [0, 29563]
+Attention mask shape: (2000, 128)
+ELECTRA data preparation complete
+
+Starting ELECTRA hyperparameter search...
+
+Starting hyperparameter search for ELECTRA
+Input shapes - X_train: (16000, 128), y_train: (16000,)
+Input shapes - X_val: (2000, 128), y_val: (2000,)
+Number of classes: 6
+Parameter grid: {'dropout_rate': [0.1, 0.3], 'lr': [2e-05, 3e-05]}
+ELECTRA hyperparameter search will run 4 combos (max_models=2)
+All parameter combinations: [{'dropout_rate': 0.1, 'lr': 2e-05}, {'dropout_rate': 0.1, 'lr': 3e-05}, {'dropout_rate': 0.3, 'lr': 2e-05}, {'dropout_rate': 0.3, 'lr': 3e-05}]
+Hyperparameter search started at 2025-12-31 17:11:20
+
+============================================================
+ELECTRA Model 1/4 - params: {'dropout_rate': 0.1, 'lr': 2e-05}
+
+Building ELECTRA model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=2e-05
+Building ELECTRA model from google/electra-small-discriminator...
+Initializing TransformerClassifier: type=electra, model_name=google/electra-small-discriminator, num_classes=6, dropout_rate=0.1
+Loading pretrained ELECTRA model from google/electra-small-discriminator...
+ELECTRA base model loaded successfully
+Transformer hidden size: 256
+Classification head: 256 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=2e-05
+ELECTRA model built successfully!
+Model device: cuda
+Total parameters: 13,516,678
+Trainable parameters: 13,516,678
+Model size: 51.56 MB
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 3, Batch size: 16, Patience: 3
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Epoch 1/3
+  First batch - loss: 1.7842, batch_size: 16
+  Train - loss: 1.2137, accuracy: 0.5693, precision: 0.5313, recall: 0.5166, f1: 0.5144, auc_roc: 0.8589
+  Val   - loss: 0.4096, accuracy: 0.8505, precision: 0.8112, recall: 0.8849, f1: 0.8359, auc_roc: 0.9834
+Epoch 1/3 - loss: 1.2137 - acc: 0.5693 - prec: 0.5313 - rec: 0.5166 - f1: 0.5144 - auc: 0.8589
+         Val    - loss: 0.4096 - acc: 0.8505 - prec: 0.8112 - rec: 0.8849 - f1: 0.8359 - auc: 0.9834
+
+Epoch 2/3
+  First batch - loss: 0.5952, batch_size: 16
+  Train - loss: 0.3669, accuracy: 0.8838, precision: 0.8316, recall: 0.8982, f1: 0.8569, auc_roc: 0.9837
+  Val   - loss: 0.2728, accuracy: 0.9055, precision: 0.8615, recall: 0.9192, f1: 0.8834, auc_roc: 0.9925
+Epoch 2/3 - loss: 0.3669 - acc: 0.8838 - prec: 0.8316 - rec: 0.8982 - f1: 0.8569 - auc: 0.9837
+         Val    - loss: 0.2728 - acc: 0.9055 - prec: 0.8615 - rec: 0.9192 - f1: 0.8834 - auc: 0.9925
+
+Epoch 3/3
+  First batch - loss: 0.1517, batch_size: 16
+  Train - loss: 0.2422, accuracy: 0.9175, precision: 0.8663, recall: 0.9261, f1: 0.8906, auc_roc: 0.9920
+  Val   - loss: 0.2167, accuracy: 0.9190, precision: 0.8752, recall: 0.9349, f1: 0.8998, auc_roc: 0.9948
+Epoch 3/3 - loss: 0.2422 - acc: 0.9175 - prec: 0.8663 - rec: 0.9261 - f1: 0.8906 - auc: 0.9920
+         Val    - loss: 0.2167 - acc: 0.9190 - prec: 0.8752 - rec: 0.9349 - f1: 0.8998 - auc: 0.9948
+Restored best model weights (best_val_loss: 0.2167)
+Training completed. History contains 3 epochs
+Finished training. Best val_accuracy: 0.9190
+Best val_precision: 0.8752, val_recall: 0.9349, val_f1: 0.8998, val_auc_roc: 0.9948
+Training time: 182.75 seconds (3.05 minutes)
+Saving model to ./hp_models/electra_dr0.1_lr2e-05.pt...
+Saved ELECTRA model to ./hp_models/electra_dr0.1_lr2e-05.pt
+Saved training plot: electra_dr0.1_lr2e-05.png
+Current best val_accuracy: -1.0000, this model: 0.9190
+New best model found! Val accuracy: 0.9190
+
+============================================================
+ELECTRA Model 2/4 - params: {'dropout_rate': 0.1, 'lr': 3e-05}
+
+Building ELECTRA model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05
+Building ELECTRA model from google/electra-small-discriminator...
+Initializing TransformerClassifier: type=electra, model_name=google/electra-small-discriminator, num_classes=6, dropout_rate=0.1
+Loading pretrained ELECTRA model from google/electra-small-discriminator...
+ELECTRA base model loaded successfully
+Transformer hidden size: 256
+Classification head: 256 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=3e-05
+ELECTRA model built successfully!
+Model device: cuda
+Total parameters: 13,516,678
+Trainable parameters: 13,516,678
+Model size: 51.56 MB
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 3, Batch size: 16, Patience: 3
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Epoch 1/3
+  First batch - loss: 1.7659, batch_size: 16
+  Train - loss: 1.0312, accuracy: 0.6573, precision: 0.5958, recall: 0.6081, f1: 0.6001, auc_roc: 0.8998
+  Val   - loss: 0.3500, accuracy: 0.9000, precision: 0.8501, recall: 0.9018, f1: 0.8711, auc_roc: 0.9864
+Epoch 1/3 - loss: 1.0312 - acc: 0.6573 - prec: 0.5958 - rec: 0.6081 - f1: 0.6001 - auc: 0.8998
+         Val    - loss: 0.3500 - acc: 0.9000 - prec: 0.8501 - rec: 0.9018 - f1: 0.8711 - auc: 0.9864
+
+Epoch 2/3
+  First batch - loss: 0.2030, batch_size: 16
+  Train - loss: 0.2897, accuracy: 0.9054, precision: 0.8519, recall: 0.9156, f1: 0.8766, auc_roc: 0.9893
+  Val   - loss: 0.2216, accuracy: 0.9235, precision: 0.8782, recall: 0.9337, f1: 0.9007, auc_roc: 0.9946
+Epoch 2/3 - loss: 0.2897 - acc: 0.9054 - prec: 0.8519 - rec: 0.9156 - f1: 0.8766 - auc: 0.9893
+         Val    - loss: 0.2216 - acc: 0.9235 - prec: 0.8782 - rec: 0.9337 - f1: 0.9007 - auc: 0.9946
+
+Epoch 3/3
+  First batch - loss: 0.0967, batch_size: 16
+  Train - loss: 0.1990, accuracy: 0.9258, precision: 0.8733, recall: 0.9371, f1: 0.8985, auc_roc: 0.9947
+  Val   - loss: 0.1784, accuracy: 0.9215, precision: 0.8744, recall: 0.9403, f1: 0.9012, auc_roc: 0.9962
+Epoch 3/3 - loss: 0.1990 - acc: 0.9258 - prec: 0.8733 - rec: 0.9371 - f1: 0.8985 - auc: 0.9947
+         Val    - loss: 0.1784 - acc: 0.9215 - prec: 0.8744 - rec: 0.9403 - f1: 0.9012 - auc: 0.9962
+Restored best model weights (best_val_loss: 0.1784)
+Training completed. History contains 3 epochs
+Finished training. Best val_accuracy: 0.9235
+Best val_precision: 0.8782, val_recall: 0.9403, val_f1: 0.9012, val_auc_roc: 0.9962
+Training time: 182.43 seconds (3.04 minutes)
+Saving model to ./hp_models/electra_dr0.1_lr3e-05.pt...
+Saved ELECTRA model to ./hp_models/electra_dr0.1_lr3e-05.pt
+Saved training plot: electra_dr0.1_lr3e-05.png
+Current best val_accuracy: 0.9190, this model: 0.9235
+New best model found! Val accuracy: 0.9235
+
+Hyperparameter search completed in 367.90 seconds (6.13 minutes)
+Trained 2 models, best val_accuracy: 0.9235
+Saving summary to ./results/hp_results_electra.json...
+Saved ELECTRA hyperparameter search summary to ./results/hp_results_electra.json
+
+Evaluating best ELECTRA model...
+
+======================================================================
+Evaluating Best ELECTRA Model
+======================================================================
+Loading best ELECTRA model from ./hp_models/electra_dr0.1_lr3e-05.pt ...
+Best model params: {'dropout_rate': 0.1, 'lr': 3e-05}
+Best model path exists: True
+Recreating model architecture: electra, 6 classes
+
+Building ELECTRA model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05
+Building ELECTRA model from google/electra-small-discriminator...
+Initializing TransformerClassifier: type=electra, model_name=google/electra-small-discriminator, num_classes=6, dropout_rate=0.1
+Loading pretrained ELECTRA model from google/electra-small-discriminator...
+ELECTRA base model loaded successfully
+Transformer hidden size: 256
+Classification head: 256 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=3e-05
+ELECTRA model built successfully!
+Model device: cuda
+Total parameters: 13,516,678
+Trainable parameters: 13,516,678
+Model size: 51.56 MB
+Loading weights from ./hp_models/electra_dr0.1_lr3e-05.pt...
+Model weights loaded and set to eval mode
+Preparing validation data tensors...
+Validation data shape: torch.Size([2000, 128])
+Making predictions on 2000 samples...
+Processing 125 batches with batch_size=16
+Predictions shape: (2000,), probabilities shape: (2000, 6)
+Prediction range: [0, 5], unique predictions: 6
+
+ELECTRA Validation Metrics:
+  Accuracy:  0.9215
+  Macro F1:  0.9012
+  Precision: 0.8744
+  Recall:    0.9403
+
+ELECTRA Classification Report:
+
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.93      0.95       550
+         joy       0.99      0.89      0.94       704
+        love       0.78      0.99      0.87       178
+       anger       0.94      0.91      0.93       275
+        fear       0.81      0.91      0.86       212
+     suprise       0.75      1.00      0.86        81
+
+    accuracy                           0.92      2000
+   macro avg       0.87      0.94      0.90      2000
+weighted avg       0.93      0.92      0.92      2000
+
+Saved best ELECTRA model report to ./results/electra_best_model_report.txt
+Saved confusion matrix plot: electra_confusion_matrix_(counts)_electra.png
+Saved confusion matrix plot: electra_confusion_matrix_(normalized)_electra.png
+ELECTRA evaluation complete
+
+======================================================================
+Training RoBERTa Model
+======================================================================
+
+Starting data preparation for ROBERTA
+Input texts count: 16000
+Max length: 128
+Labels provided: True
+
+Preparing ROBERTA data using roberta-base...
+Loading tokenizer... (downloading if first time)
+RoBERTa tokenizer loaded.
+Preprocessing 16000 texts...
+Preprocessing complete. Sample length range: [7, 303]
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (16000,), dtype: int64
+ROBERTA data prepared. Input shape: (16000, 128)
+Input IDs dtype: int64, range: [0, 49641]
+Attention mask shape: (16000, 128)
+
+Starting data preparation for ROBERTA
+Input texts count: 2000
+Max length: 128
+Labels provided: True
+
+Preparing ROBERTA data using roberta-base...
+Loading tokenizer... (downloading if first time)
+RoBERTa tokenizer loaded.
+Preprocessing 2000 texts...
+Preprocessing complete. Sample length range: [11, 301]
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (2000,), dtype: int64
+ROBERTA data prepared. Input shape: (2000, 128)
+Input IDs dtype: int64, range: [0, 49552]
+Attention mask shape: (2000, 128)
+RoBERTa data preparation complete
+
+Starting RoBERTa hyperparameter search...
+
+Starting hyperparameter search for ROBERTA
+Input shapes - X_train: (16000, 128), y_train: (16000,)
+Input shapes - X_val: (2000, 128), y_val: (2000,)
+Number of classes: 6
+Parameter grid: {'dropout_rate': [0.1, 0.3], 'lr': [2e-05, 3e-05]}
+ROBERTA hyperparameter search will run 4 combos (max_models=2)
+All parameter combinations: [{'dropout_rate': 0.1, 'lr': 2e-05}, {'dropout_rate': 0.1, 'lr': 3e-05}, {'dropout_rate': 0.3, 'lr': 2e-05}, {'dropout_rate': 0.3, 'lr': 3e-05}]
+Hyperparameter search started at 2025-12-31 17:17:42
+
+============================================================
+ROBERTA Model 1/4 - params: {'dropout_rate': 0.1, 'lr': 2e-05}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=2e-05
+Building ROBERTA model from roberta-base...
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.1
+Loading pretrained ROBERTA model from roberta-base...
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=2e-05
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+Model size: 475.86 MB
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 3, Batch size: 16, Patience: 3
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Epoch 1/3
+  First batch - loss: 1.7718, batch_size: 16
+  Train - loss: 0.6698, accuracy: 0.7561, precision: 0.6915, recall: 0.7652, f1: 0.7161, auc_roc: 0.9541
+  Val   - loss: 0.2565, accuracy: 0.9030, precision: 0.8490, recall: 0.9243, f1: 0.8787, auc_roc: 0.9917
+Epoch 1/3 - loss: 0.6698 - acc: 0.7561 - prec: 0.6915 - rec: 0.7652 - f1: 0.7161 - auc: 0.9541
+         Val    - loss: 0.2565 - acc: 0.9030 - prec: 0.8490 - rec: 0.9243 - f1: 0.8787 - auc: 0.9917
+
+Epoch 2/3
+  First batch - loss: 0.1495, batch_size: 16
+  Train - loss: 0.2324, accuracy: 0.9114, precision: 0.8574, recall: 0.9233, f1: 0.8831, auc_roc: 0.9930
+  Val   - loss: 0.1830, accuracy: 0.9290, precision: 0.8833, recall: 0.9373, f1: 0.9059, auc_roc: 0.9951
+Epoch 2/3 - loss: 0.2324 - acc: 0.9114 - prec: 0.8574 - rec: 0.9233 - f1: 0.8831 - auc: 0.9930
+         Val    - loss: 0.1830 - acc: 0.9290 - prec: 0.8833 - rec: 0.9373 - f1: 0.9059 - auc: 0.9951
+
+Epoch 3/3
+  First batch - loss: 0.0236, batch_size: 16
+  Train - loss: 0.1726, accuracy: 0.9278, precision: 0.8747, recall: 0.9396, f1: 0.9000, auc_roc: 0.9959
+  Val   - loss: 0.1808, accuracy: 0.9265, precision: 0.8805, recall: 0.9372, f1: 0.9043, auc_roc: 0.9951
+Epoch 3/3 - loss: 0.1726 - acc: 0.9278 - prec: 0.8747 - rec: 0.9396 - f1: 0.9000 - auc: 0.9959
+         Val    - loss: 0.1808 - acc: 0.9265 - prec: 0.8805 - rec: 0.9372 - f1: 0.9043 - auc: 0.9951
+Restored best model weights (best_val_loss: 0.1808)
+Training completed. History contains 3 epochs
+Finished training. Best val_accuracy: 0.9290
+Best val_precision: 0.8833, val_recall: 0.9373, val_f1: 0.9059, val_auc_roc: 0.9951
+Training time: 523.44 seconds (8.72 minutes)
+Saving model to ./hp_models/roberta_dr0.1_lr2e-05.pt...
+Saved ROBERTA model to ./hp_models/roberta_dr0.1_lr2e-05.pt
+Saved training plot: roberta_dr0.1_lr2e-05.png
+Current best val_accuracy: -1.0000, this model: 0.9290
+New best model found! Val accuracy: 0.9290
+
+============================================================
+ROBERTA Model 2/4 - params: {'dropout_rate': 0.1, 'lr': 3e-05}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05
+Building ROBERTA model from roberta-base...
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.1
+Loading pretrained ROBERTA model from roberta-base...
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=3e-05
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+Model size: 475.86 MB
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 3, Batch size: 16, Patience: 3
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Epoch 1/3
+  First batch - loss: 1.7864, batch_size: 16
+  Train - loss: 0.5537, accuracy: 0.7992, precision: 0.7426, recall: 0.8082, f1: 0.7643, auc_roc: 0.9677
+  Val   - loss: 0.2176, accuracy: 0.9170, precision: 0.8707, recall: 0.9327, f1: 0.8957, auc_roc: 0.9928
+Epoch 1/3 - loss: 0.5537 - acc: 0.7992 - prec: 0.7426 - rec: 0.8082 - f1: 0.7643 - auc: 0.9677
+         Val    - loss: 0.2176 - acc: 0.9170 - prec: 0.8707 - rec: 0.9327 - f1: 0.8957 - auc: 0.9928
+
+Epoch 2/3
+  First batch - loss: 0.0435, batch_size: 16
+  Train - loss: 0.2126, accuracy: 0.9148, precision: 0.8623, recall: 0.9281, f1: 0.8882, auc_roc: 0.9933
+  Val   - loss: 0.1762, accuracy: 0.9225, precision: 0.8870, recall: 0.9234, f1: 0.9008, auc_roc: 0.9968
+Epoch 2/3 - loss: 0.2126 - acc: 0.9148 - prec: 0.8623 - rec: 0.9281 - f1: 0.8882 - auc: 0.9933
+         Val    - loss: 0.1762 - acc: 0.9225 - prec: 0.8870 - rec: 0.9234 - f1: 0.9008 - auc: 0.9968
+
+Epoch 3/3
+  First batch - loss: 0.1203, batch_size: 16
+  Train - loss: 0.1609, accuracy: 0.9304, precision: 0.8790, recall: 0.9414, f1: 0.9035, auc_roc: 0.9963
+  Val   - loss: 0.1711, accuracy: 0.9310, precision: 0.8952, recall: 0.9296, f1: 0.9097, auc_roc: 0.9965
+Epoch 3/3 - loss: 0.1609 - acc: 0.9304 - prec: 0.8790 - rec: 0.9414 - f1: 0.9035 - auc: 0.9963
+         Val    - loss: 0.1711 - acc: 0.9310 - prec: 0.8952 - rec: 0.9296 - f1: 0.9097 - auc: 0.9965
+Restored best model weights (best_val_loss: 0.1711)
+Training completed. History contains 3 epochs
+Finished training. Best val_accuracy: 0.9310
+Best val_precision: 0.8952, val_recall: 0.9327, val_f1: 0.9097, val_auc_roc: 0.9968
+Training time: 524.53 seconds (8.74 minutes)
+Saving model to ./hp_models/roberta_dr0.1_lr3e-05.pt...
+Saved ROBERTA model to ./hp_models/roberta_dr0.1_lr3e-05.pt
+Saved training plot: roberta_dr0.1_lr3e-05.png
+Current best val_accuracy: 0.9290, this model: 0.9310
+New best model found! Val accuracy: 0.9310
+
+Hyperparameter search completed in 1053.26 seconds (17.55 minutes)
+Trained 2 models, best val_accuracy: 0.9310
+Saving summary to ./results/hp_results_roberta.json...
+Saved ROBERTA hyperparameter search summary to ./results/hp_results_roberta.json
+
+Evaluating best RoBERTa model...
+
+======================================================================
+Evaluating Best ROBERTA Model
+======================================================================
+Loading best ROBERTA model from ./hp_models/roberta_dr0.1_lr3e-05.pt ...
+Best model params: {'dropout_rate': 0.1, 'lr': 3e-05}
+Best model path exists: True
+Recreating model architecture: roberta, 6 classes
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05
+Building ROBERTA model from roberta-base...
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.1
+Loading pretrained ROBERTA model from roberta-base...
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['pooler.dense.bias', 'pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA L4
+Optimizer created: AdamW with lr=3e-05
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+Model size: 475.86 MB
+Loading weights from ./hp_models/roberta_dr0.1_lr3e-05.pt...
+Model weights loaded and set to eval mode
+Preparing validation data tensors...
+Validation data shape: torch.Size([2000, 128])
+Making predictions on 2000 samples...
+Processing 125 batches with batch_size=16
+Predictions shape: (2000,), probabilities shape: (2000, 6)
+Prediction range: [0, 5], unique predictions: 6
+
+ROBERTA Validation Metrics:
+  Accuracy:  0.9310
+  Macro F1:  0.9097
+  Precision: 0.8952
+  Recall:    0.9296
+
+ROBERTA Classification Report:
+
+              precision    recall  f1-score   support
+
+     sadness       0.96      0.96      0.96       550
+         joy       0.97      0.92      0.95       704
+        love       0.79      0.98      0.87       178
+       anger       0.97      0.91      0.94       275
+        fear       0.87      0.89      0.88       212
+     suprise       0.81      0.93      0.86        81
+
+    accuracy                           0.93      2000
+   macro avg       0.90      0.93      0.91      2000
+weighted avg       0.94      0.93      0.93      2000
+
+Saved best ROBERTA model report to ./results/roberta_best_model_report.txt
+Saved confusion matrix plot: roberta_confusion_matrix_(counts)_roberta.png
+Saved confusion matrix plot: roberta_confusion_matrix_(normalized)_roberta.png
+RoBERTa evaluation complete
+
+======================================================================
+Model Comparison Summary
+======================================================================
+Collecting results from all models...
+BERT summary available: True
+ELECTRA summary available: True
+RoBERTa summary available: True
+
+========================================================================================================================
+                                        COMPREHENSIVE MODEL COMPARISON
+========================================================================================================================
+Model        Val Acc    Parameters      Size (MB)    Train Time      Total Time     
+------------------------------------------------------------------------------------------------------------------------
+BERT         0.9360     109,581,446     418.02       514.3s          17.3min        
+RoBERTa      0.9310     124,744,838     475.86       524.5s          17.6min        
+ELECTRA      0.9235     13,516,678      51.56        182.4s          6.1min         
+========================================================================================================================
+
+Detailed Model Rankings (by validation accuracy):
+----------------------------------------------------------------------
+1. BERT: 0.9360
+   Best params: {'dropout_rate': 0.1, 'lr': 3e-05}
+   Model size: 418.02 MB (109,581,446 parameters)
+   Training time: 514.28 seconds (8.57 minutes)
+   Total time (all models): 17.27 minutes
+   Model path: ./hp_models/bert_dr0.1_lr3e-05.pt
+
+2. RoBERTa: 0.9310
+   Best params: {'dropout_rate': 0.1, 'lr': 3e-05}
+   Model size: 475.86 MB (124,744,838 parameters)
+   Training time: 524.53 seconds (8.74 minutes)
+   Total time (all models): 17.55 minutes
+   Model path: ./hp_models/roberta_dr0.1_lr3e-05.pt
+
+3. ELECTRA: 0.9235
+   Best params: {'dropout_rate': 0.1, 'lr': 3e-05}
+   Model size: 51.56 MB (13,516,678 parameters)
+   Training time: 182.43 seconds (3.04 minutes)
+   Total time (all models): 6.13 minutes
+   Model path: ./hp_models/electra_dr0.1_lr3e-05.pt
+
+Saved model comparison to ./results/model_comparison.json
+Saved model comparison table to ./results/model_comparison.csv
+
+Checking if test predictions should be generated...
+Comparison results available: True
+TEST_FILE exists: False
+Skipping test predictions (no comparison results or test file not found)
+
+======================================================================
+Pipeline Complete!
+======================================================================
+Results saved to: ./results
+Models saved to: ./hp_models
+Pipeline finished at: 2025-12-31 17:35:25

@@ -1,0 +1,45 @@
+Best ROBERTA model path: ./hp_models/roberta_dr0.1_lr3e-05.pt
+
+{
+  "params": {
+    "dropout_rate": 0.1,
+    "lr": 3e-05
+  },
+  "val_accuracy": 0.931,
+  "val_precision": 0.8951648309870218,
+  "val_recall": 0.9327432019840757,
+  "val_f1": 0.9096899439258687,
+  "val_auc_roc": 0.9967650010761391,
+  "model_path": "./hp_models/roberta_dr0.1_lr3e-05.pt",
+  "history_keys": [
+    "loss",
+    "accuracy",
+    "precision",
+    "recall",
+    "f1",
+    "auc_roc",
+    "val_loss",
+    "val_accuracy",
+    "val_precision",
+    "val_recall",
+    "val_f1",
+    "val_auc_roc"
+  ],
+  "training_time_seconds": 524.5343401432037,
+  "model_size_mb": 475.8637924194336,
+  "total_parameters": 124744838
+}
+
+Validation Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.96      0.96      0.96       550
+         joy       0.97      0.92      0.95       704
+        love       0.79      0.98      0.87       178
+       anger       0.97      0.91      0.94       275
+        fear       0.87      0.89      0.88       212
+     suprise       0.81      0.93      0.86        81
+
+    accuracy                           0.93      2000
+   macro avg       0.90      0.93      0.91      2000
+weighted avg       0.94      0.93      0.93      2000
