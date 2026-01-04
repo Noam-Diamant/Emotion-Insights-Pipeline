@@ -58,7 +58,7 @@ PARAM_GRID = {
     "dropout_rate": [0.1, 0.3],
     "lr": [2e-5, 3e-5],
     "batch_size": [16, 32],
-    "max_length": [128, 256],
+    "weight_decay": [0.0, 0.01],
 }
 
 
@@ -476,7 +476,7 @@ class TransformerClassifier(nn.Module):
         return logits
 
 
-def build_model(model_type="bert", model_name=None, num_classes=6, max_length=MAX_LENGTH, dropout_rate=0.1, lr=2e-5):
+def build_model(model_type="bert", model_name=None, num_classes=6, max_length=MAX_LENGTH, dropout_rate=0.1, lr=2e-5, weight_decay=0.0):
     """
     Build and compile a transformer-based classification model.
 
@@ -487,12 +487,13 @@ def build_model(model_type="bert", model_name=None, num_classes=6, max_length=MA
         max_length: Maximum sequence length (not used in PyTorch version but kept for compatibility)
         dropout_rate: Dropout rate for classification head
         lr: Learning rate for AdamW optimizer
+        weight_decay: Weight decay for AdamW optimizer
 
     Returns:
         Tuple of (model, optimizer, device)
     """
     print(f"\nBuilding {model_type.upper()} model...")
-    print(f"Parameters: num_classes={num_classes}, dropout_rate={dropout_rate}, lr={lr}")
+    print(f"Parameters: num_classes={num_classes}, dropout_rate={dropout_rate}, lr={lr}, weight_decay={weight_decay}")
     
     # Set default model names
     if model_name is None:
@@ -512,8 +513,8 @@ def build_model(model_type="bert", model_name=None, num_classes=6, max_length=MA
     model.to(device)
 
     # Create optimizer
-    optimizer = AdamW(model.parameters(), lr=lr)
-    print(f"Optimizer created: AdamW with lr={lr}")
+    optimizer = AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    print(f"Optimizer created: AdamW with lr={lr}, weight_decay={weight_decay}")
 
     # Calculate model size
     model_size_mb = sum(p.numel() for p in model.parameters()) * 4 / (1024 * 1024)  # 4 bytes per parameter (float32)
@@ -809,14 +810,14 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, nu
         dropout_rate = float(params.get("dropout_rate", 0.1))
         lr = float(params.get("lr", 2e-5))
         batch_size = int(params.get("batch_size", 16))
-        max_length = int(params.get("max_length", MAX_LENGTH))
+        weight_decay = float(params.get("weight_decay", 0.0))
 
-        # Prepare data for this max_length
-        print(f"Preparing data with max_length={max_length}...")
-        X_train = prepare_model_data(train_texts, y_train, model_type, model_name, max_length)
-        X_val = prepare_model_data(val_texts, y_val, model_type, model_name, max_length)
+        # Prepare data with fixed max_length (not a hyperparameter anymore)
+        print(f"Preparing data with max_length={MAX_LENGTH}...")
+        X_train = prepare_model_data(train_texts, y_train, model_type, model_name, MAX_LENGTH)
+        X_val = prepare_model_data(val_texts, y_val, model_type, model_name, MAX_LENGTH)
 
-        model, optimizer, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, max_length=max_length, dropout_rate=dropout_rate, lr=lr)
+        model, optimizer, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, max_length=MAX_LENGTH, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay)
 
         # Calculate model size
         model_size_mb = sum(p.numel() for p in model.parameters()) * 4 / (1024 * 1024)
@@ -928,9 +929,9 @@ def evaluate_best_model(model_type, hp_summary, val_texts, y_val, class_names):
     # Extract parameters with defaults
     dropout_rate = float(best_params.get("dropout_rate", 0.1))
     lr = float(best_params.get("lr", 2e-5))
-    max_length = int(best_params.get("max_length", MAX_LENGTH))
+    weight_decay = float(best_params.get("weight_decay", 0.0))
 
-    model, _, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, dropout_rate=dropout_rate, lr=lr)
+    model, _, device = build_model(model_type=model_type, model_name=model_name, num_classes=num_classes, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay)
 
     # Load saved weights
     print(f"Loading weights from {best_model_path}...")
@@ -938,9 +939,9 @@ def evaluate_best_model(model_type, hp_summary, val_texts, y_val, class_names):
     model.eval()
     print("Model weights loaded and set to eval mode")
 
-    # Prepare validation data using the best model's max_length
-    print(f"Preparing validation data with max_length={max_length}...")
-    X_val = prepare_model_data(val_texts, y_val, model_type, model_name, max_length)
+    # Prepare validation data with fixed max_length
+    print(f"Preparing validation data with max_length={MAX_LENGTH}...")
+    X_val = prepare_model_data(val_texts, y_val, model_type, model_name, MAX_LENGTH)
     val_input_ids = torch.tensor(X_val["input_ids"], dtype=torch.long).to(device)
     val_attention_mask = torch.tensor(X_val["attention_mask"], dtype=torch.long).to(device)
     print(f"Validation data shape: {val_input_ids.shape}")
@@ -1373,7 +1374,7 @@ if __name__ == "__main__":
                 "Dropout Rate": r["best_params"].get("dropout_rate", 0),
                 "Learning Rate": r["best_params"].get("lr", 0),
                 "Batch Size": r["best_params"].get("batch_size", 0),
-                "Max Length": r["best_params"].get("max_length", 0),
+                "Weight Decay": r["best_params"].get("weight_decay", 0),
             }
             for r in comparison_results
         ]
@@ -1411,7 +1412,7 @@ if __name__ == "__main__":
 
         # Load the best model
         best_params = best_result["best_params"]
-        model, _, device = build_model(model_type=best_model_type, model_name=model_name_map[best_model_type], num_classes=num_classes, dropout_rate=best_params["dropout_rate"], lr=best_params["lr"])
+        model, _, device = build_model(model_type=best_model_type, model_name=model_name_map[best_model_type], num_classes=num_classes, dropout_rate=best_params.get("dropout_rate", 0.1), lr=best_params.get("lr", 2e-5), weight_decay=best_params.get("weight_decay", 0.0))
         model.load_state_dict(torch.load(best_result["model_path"], map_location=device, weights_only=True))
         model.eval()
 
