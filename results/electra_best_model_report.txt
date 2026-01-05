@@ -1,31 +1,33 @@
-Best ELECTRA model path: ./hp_models/electra_dr0.1_lr3e-05.pt
+Best ELECTRA model path: ./hp_models/electra_batch_size32_dropout_rate0p1_lr3em05_weight_decay0p01.pt
 
 {
   "params": {
     "dropout_rate": 0.1,
-    "lr": 3e-05
+    "lr": 3e-05,
+    "batch_size": 32,
+    "weight_decay": 0.01
   },
-  "val_accuracy": 0.9235,
-  "val_precision": 0.87817129308051,
-  "val_recall": 0.9403102756149581,
-  "val_f1": 0.9012098675615188,
-  "val_auc_roc": 0.9961783831275973,
-  "model_path": "./hp_models/electra_dr0.1_lr3e-05.pt",
+  "val_accuracy": 0.931,
+  "val_precision": 0.8917031798023479,
+  "val_recall": 0.9404808285312313,
+  "val_f1": 0.9104681479661108,
+  "val_auc_pr": 0.9672865874787249,
+  "model_path": "./hp_models/electra_batch_size32_dropout_rate0p1_lr3em05_weight_decay0p01.pt",
   "history_keys": [
     "loss",
     "accuracy",
     "precision",
     "recall",
     "f1",
-    "auc_roc",
+    "auc_pr",
     "val_loss",
     "val_accuracy",
     "val_precision",
     "val_recall",
     "val_f1",
-    "val_auc_roc"
+    "val_auc_pr"
   ],
-  "training_time_seconds": 182.4334716796875,
+  "training_time_seconds": 78.88984513282776,
   "model_size_mb": 51.562034606933594,
   "total_parameters": 13516678
 }
@@ -33,13 +35,13 @@ Best ELECTRA model path: ./hp_models/electra_dr0.1_lr3e-05.pt
 Validation Classification Report:
               precision    recall  f1-score   support
 
-     sadness       0.98      0.93      0.95       550
-         joy       0.99      0.89      0.94       704
-        love       0.78      0.99      0.87       178
-       anger       0.94      0.91      0.93       275
-        fear       0.81      0.91      0.86       212
-     suprise       0.75      1.00      0.86        81
+     sadness       0.98      0.94      0.96       550
+         joy       0.98      0.91      0.95       704
+        love       0.80      0.99      0.89       178
+       anger       0.91      0.95      0.93       275
+        fear       0.86      0.93      0.90       212
+     suprise       0.81      0.89      0.85        81
 
-    accuracy                           0.92      2000
-   macro avg       0.87      0.94      0.90      2000
-weighted avg       0.93      0.92      0.92      2000
+    accuracy                           0.93      2000
+   macro avg       0.89      0.93      0.91      2000
+weighted avg       0.94      0.93      0.93      2000

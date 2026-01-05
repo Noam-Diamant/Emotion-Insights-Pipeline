@@ -1,31 +1,33 @@
-Best BERT model path: ./hp_models/bert_dr0.1_lr3e-05.pt
+Best BERT model path: ./hp_models/bert_batch_size16_dropout_rate0p1_lr3em05_weight_decay0p0.pt
 
 {
   "params": {
     "dropout_rate": 0.1,
-    "lr": 3e-05
+    "lr": 3e-05,
+    "batch_size": 16,
+    "weight_decay": 0.0
   },
-  "val_accuracy": 0.936,
-  "val_precision": 0.8951084758616564,
-  "val_recall": 0.9351394817905577,
-  "val_f1": 0.9117026222106072,
-  "val_auc_roc": 0.9977643037908219,
-  "model_path": "./hp_models/bert_dr0.1_lr3e-05.pt",
+  "val_accuracy": 0.9405,
+  "val_precision": 0.8997168791439701,
+  "val_recall": 0.9488584548313321,
+  "val_f1": 0.9192230730135879,
+  "val_auc_pr": 0.9806497695119525,
+  "model_path": "./hp_models/bert_batch_size16_dropout_rate0p1_lr3em05_weight_decay0p0.pt",
   "history_keys": [
     "loss",
     "accuracy",
     "precision",
     "recall",
     "f1",
-    "auc_roc",
+    "auc_pr",
     "val_loss",
     "val_accuracy",
     "val_precision",
     "val_recall",
     "val_f1",
-    "val_auc_roc"
+    "val_auc_pr"
   ],
-  "training_time_seconds": 514.2802777290344,
+  "training_time_seconds": 391.3776361942291,
   "model_size_mb": 418.0200424194336,
   "total_parameters": 109581446
 }
@@ -33,13 +35,13 @@ Best BERT model path: ./hp_models/bert_dr0.1_lr3e-05.pt
 Validation Classification Report:
               precision    recall  f1-score   support
 
-     sadness       0.98      0.96      0.97       550
-         joy       0.99      0.91      0.95       704
-        love       0.80      0.98      0.88       178
-       anger       0.93      0.93      0.93       275
-        fear       0.86      0.93      0.90       212
-     suprise       0.81      0.88      0.84        81
+     sadness       0.97      0.97      0.97       550
+         joy       0.99      0.92      0.95       704
+        love       0.80      1.00      0.89       178
+       anger       0.97      0.94      0.95       275
+        fear       0.92      0.86      0.89       212
+     suprise       0.76      1.00      0.86        81
 
     accuracy                           0.94      2000
-   macro avg       0.90      0.93      0.91      2000
-weighted avg       0.94      0.94      0.94      2000
+   macro avg       0.90      0.95      0.92      2000
+weighted avg       0.95      0.94      0.94      2000

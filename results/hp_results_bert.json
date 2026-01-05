@@ -2,29 +2,31 @@
   "best_model_info": {
     "params": {
       "dropout_rate": 0.1,
-      "lr": 3e-05
+      "lr": 3e-05,
+      "batch_size": 16,
+      "weight_decay": 0.0
     },
-    "val_accuracy": 0.936,
-    "val_precision": 0.8951084758616564,
-    "val_recall": 0.9351394817905577,
-    "val_f1": 0.9117026222106072,
-    "val_auc_roc": 0.9977643037908219,
-    "model_path": "./hp_models/bert_dr0.1_lr3e-05.pt",
+    "val_accuracy": 0.9405,
+    "val_precision": 0.8997168791439701,
+    "val_recall": 0.9488584548313321,
+    "val_f1": 0.9192230730135879,
+    "val_auc_pr": 0.9806497695119525,
+    "model_path": "./hp_models/bert_batch_size16_dropout_rate0p1_lr3em05_weight_decay0p0.pt",
     "history_keys": [
       "loss",
       "accuracy",
       "precision",
       "recall",
       "f1",
-      "auc_roc",
+      "auc_pr",
       "val_loss",
       "val_accuracy",
       "val_precision",
       "val_recall",
       "val_f1",
-      "val_auc_roc"
+      "val_auc_pr"
     ],
-    "training_time_seconds": 514.2802777290344,
+    "training_time_seconds": 391.3776361942291,
     "model_size_mb": 418.0200424194336,
     "total_parameters": 109581446
   },
@@ -32,62 +34,500 @@
     {
       "params": {
         "dropout_rate": 0.1,
-        "lr": 2e-05
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
       },
-      "val_accuracy": 0.934,
-      "val_precision": 0.8901122619763097,
-      "val_recall": 0.9470975380894586,
-      "val_f1": 0.9136801175877576,
-      "val_auc_roc": 0.9971540139279633,
-      "model_path": "./hp_models/bert_dr0.1_lr2e-05.pt",
+      "val_accuracy": 0.9375,
+      "val_precision": 0.8945133196572619,
+      "val_recall": 0.9463787525555097,
+      "val_f1": 0.9158844028044805,
+      "val_auc_pr": 0.9823236435180934,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p1_lr2em05_weight_decay0p0.pt",
       "history_keys": [
         "loss",
         "accuracy",
         "precision",
         "recall",
         "f1",
-        "auc_roc",
+        "auc_pr",
         "val_loss",
         "val_accuracy",
         "val_precision",
         "val_recall",
         "val_f1",
-        "val_auc_roc"
+        "val_auc_pr"
       ],
-      "training_time_seconds": 516.5729241371155,
+      "training_time_seconds": 387.97331857681274,
       "model_size_mb": 418.0200424194336,
       "total_parameters": 109581446
     },
     {
       "params": {
         "dropout_rate": 0.1,
-        "lr": 3e-05
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
       },
-      "val_accuracy": 0.936,
-      "val_precision": 0.8951084758616564,
-      "val_recall": 0.9351394817905577,
-      "val_f1": 0.9117026222106072,
-      "val_auc_roc": 0.9977643037908219,
-      "model_path": "./hp_models/bert_dr0.1_lr3e-05.pt",
+      "val_accuracy": 0.9285,
+      "val_precision": 0.8919134313755642,
+      "val_recall": 0.933881433451539,
+      "val_f1": 0.9062810524558037,
+      "val_auc_pr": 0.9765551705614804,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p1_lr2em05_weight_decay0p01.pt",
       "history_keys": [
         "loss",
         "accuracy",
         "precision",
         "recall",
         "f1",
-        "auc_roc",
+        "auc_pr",
         "val_loss",
         "val_accuracy",
         "val_precision",
         "val_recall",
         "val_f1",
-        "val_auc_roc"
+        "val_auc_pr"
       ],
-      "training_time_seconds": 514.2802777290344,
+      "training_time_seconds": 396.32669138908386,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.931,
+      "val_precision": 0.8861880485953962,
+      "val_recall": 0.9435885152671512,
+      "val_f1": 0.9099703900834607,
+      "val_auc_pr": 0.9796048297569077,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p1_lr2em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 357.63311767578125,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9325,
+      "val_precision": 0.8946212389213652,
+      "val_recall": 0.9360537996128975,
+      "val_f1": 0.9119919512260012,
+      "val_auc_pr": 0.9767097424069661,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p1_lr2em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 358.8422679901123,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9405,
+      "val_precision": 0.8997168791439701,
+      "val_recall": 0.9488584548313321,
+      "val_f1": 0.9192230730135879,
+      "val_auc_pr": 0.9806497695119525,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p1_lr3em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 391.3776361942291,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9335,
+      "val_precision": 0.891929028995574,
+      "val_recall": 0.9425174570158434,
+      "val_f1": 0.9120079751922985,
+      "val_auc_pr": 0.9802826631183978,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p1_lr3em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 394.2563211917877,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9355,
+      "val_precision": 0.8905359636002527,
+      "val_recall": 0.947675823996012,
+      "val_f1": 0.9145924503964472,
+      "val_auc_pr": 0.9806172775233307,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p1_lr3em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 355.39827251434326,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.926,
+      "val_precision": 0.8807056098266508,
+      "val_recall": 0.9387920067684674,
+      "val_f1": 0.9048308372033952,
+      "val_auc_pr": 0.9758005188550598,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p1_lr3em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 357.6617684364319,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.935,
+      "val_precision": 0.8952788135296669,
+      "val_recall": 0.9404535095495982,
+      "val_f1": 0.9133453486742837,
+      "val_auc_pr": 0.9807310883183886,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p3_lr2em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 390.1329607963562,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9385,
+      "val_precision": 0.895255754222745,
+      "val_recall": 0.9446245362815967,
+      "val_f1": 0.9163951643733217,
+      "val_auc_pr": 0.9778945374149804,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p3_lr2em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 394.7452235221863,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.932,
+      "val_precision": 0.8882504005708939,
+      "val_recall": 0.9386833198523922,
+      "val_f1": 0.9090408330685262,
+      "val_auc_pr": 0.9797048375366765,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p3_lr2em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 355.76800751686096,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9305,
+      "val_precision": 0.8876083538996888,
+      "val_recall": 0.9401129578057446,
+      "val_f1": 0.9102136788093659,
+      "val_auc_pr": 0.9773115007423647,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p3_lr2em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 358.26108503341675,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9305,
+      "val_precision": 0.8858217448862541,
+      "val_recall": 0.943195218696398,
+      "val_f1": 0.906730180929641,
+      "val_auc_pr": 0.97872101998985,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p3_lr3em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 390.3965165615082,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9315,
+      "val_precision": 0.8849386745059288,
+      "val_recall": 0.9499703582625063,
+      "val_f1": 0.9090599283842495,
+      "val_auc_pr": 0.9797611124801525,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0p3_lr3em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 394.1791853904724,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.934,
+      "val_precision": 0.8898665821485968,
+      "val_recall": 0.9424110478960253,
+      "val_f1": 0.9110026597537968,
+      "val_auc_pr": 0.9785977007477342,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p3_lr3em05_weight_decay0p0.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 355.85801792144775,
+      "model_size_mb": 418.0200424194336,
+      "total_parameters": 109581446
+    },
+    {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.933,
+      "val_precision": 0.8867399878192361,
+      "val_recall": 0.943288094009053,
+      "val_f1": 0.9088653069053927,
+      "val_auc_pr": 0.9791736795508226,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0p3_lr3em05_weight_decay0p01.pt",
+      "history_keys": [
+        "loss",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "auc_pr",
+        "val_loss",
+        "val_accuracy",
+        "val_precision",
+        "val_recall",
+        "val_f1",
+        "val_auc_pr"
+      ],
+      "training_time_seconds": 357.5510778427124,
       "model_size_mb": 418.0200424194336,
       "total_parameters": 109581446
     }
   ],
-  "total_training_time_seconds": 1035.9624421596527,
-  "num_models_trained": 2
+  "total_training_time_seconds": 6029.692565441132,
+  "num_models_trained": 16
 }
