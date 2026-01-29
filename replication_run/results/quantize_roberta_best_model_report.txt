@@ -1,0 +1,33 @@
+Quantize best ROBERTA model path: ./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+{
+  "params": {
+    "dropout_rate": 0.3,
+    "lr": 2e-05,
+    "batch_size": 32,
+    "weight_decay": 0.01
+  },
+  "val_accuracy": 0.9355,
+  "val_precision": 0.8931306748245307,
+  "val_recall": 0.9465860941503857,
+  "val_f1": 0.9156606216292079,
+  "val_auc_pr": 0.980815790648716,
+  "model_path": "./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+  "val_run_time_seconds": 44.34317499399185,
+  "model_size_mb": 231.06830883026123,
+  "total_parameters": 39037440
+}
+
+Validation Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.95      0.96       550
+         joy       0.99      0.91      0.95       704
+        love       0.81      0.99      0.89       178
+       anger       0.94      0.96      0.95       275
+        fear       0.89      0.88      0.88       212
+     suprise       0.76      0.99      0.86        81
+
+    accuracy                           0.94      2000
+   macro avg       0.89      0.95      0.92      2000
+weighted avg       0.94      0.94      0.94      2000

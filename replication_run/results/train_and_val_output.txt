@@ -1923,3 +1923,861 @@ Building ROBERTA model...
 Parameters: num_classes=6, dropout_rate=0.1, lr=3e-05, weight_decay=0.01
 Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.1
 Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=3e-05, weight_decay=0.01
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 32, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 500 batches
+Val dataloader: 63 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.7341, accuracy: 0.7262, precision: 0.6730, recall: 0.7346, f1: 0.6899, auc_pr: 0.7811, time: 48.24s
+  Val   - loss: 0.2831, accuracy: 0.9150, precision: 0.8801, recall: 0.9055, f1: 0.8908, auc_pr: 0.9445, time: 1.95s
+  Total epoch time: 50.19s (train: 48.24s, val: 1.95s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2333, accuracy: 0.9118, precision: 0.8561, recall: 0.9253, f1: 0.8827, auc_pr: 0.9453, time: 49.87s
+  Val   - loss: 0.1938, accuracy: 0.9145, precision: 0.8651, recall: 0.9336, f1: 0.8927, auc_pr: 0.9726, time: 1.97s
+  Total epoch time: 51.84s (train: 49.87s, val: 1.97s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1746, accuracy: 0.9243, precision: 0.8714, recall: 0.9372, f1: 0.8969, auc_pr: 0.9652, time: 49.97s
+  Val   - loss: 0.1664, accuracy: 0.9285, precision: 0.8864, recall: 0.9340, f1: 0.9056, auc_pr: 0.9803, time: 1.98s
+  Total epoch time: 51.95s (train: 49.97s, val: 1.98s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1533, accuracy: 0.9316, precision: 0.8784, recall: 0.9432, f1: 0.9035, auc_pr: 0.9716, time: 49.98s
+  Val   - loss: 0.1395, accuracy: 0.9325, precision: 0.8870, recall: 0.9439, f1: 0.9096, auc_pr: 0.9796, time: 1.97s
+  Total epoch time: 51.95s (train: 49.98s, val: 1.97s)
+
+Starting Epoch 5/10
+Epoch 5/10 results:
+	Train - loss: 0.1283, accuracy: 0.9373, precision: 0.8861, recall: 0.9481, f1: 0.9106, auc_pr: 0.9782, time: 49.67s
+  Val   - loss: 0.1435, accuracy: 0.9325, precision: 0.8890, recall: 0.9426, f1: 0.9105, auc_pr: 0.9789, time: 1.98s
+  Total epoch time: 51.65s (train: 49.67s, val: 1.98s)
+Early stopping triggered after epoch 5
+Restored best model weights (best_val_loss: 0.1395)
+Training completed. History contains 5 epochs
+Finished training. val_accuracy: 0.9325, val_precision: 0.8870, val_recall: 0.9439, val_f1: 0.9096, val_auc_pr: 0.9796
+Average epoch time: 51.52 seconds (0.86 minutes) - train: 49.55s, val: 1.97s
+Inference time (on average): 1.97 seconds (0.03 minutes)
+Saving model to ./hp_models/roberta_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.01.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.01.pt
+Saved training plot: roberta_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.01.png
+Current best val_f1: 0.9128, this model: 0.9096
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 9/16 - params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 16, 'weight_decay': 0.0}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=2e-05, weight_decay=0.0
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=2e-05, weight_decay=0.0
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 16, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.6346, accuracy: 0.7739, precision: 0.7151, recall: 0.7791, f1: 0.7349, auc_pr: 0.8175, time: 56.85s
+  Val   - loss: 0.2948, accuracy: 0.8940, precision: 0.8429, recall: 0.9124, f1: 0.8679, auc_pr: 0.9491, time: 2.19s
+  Total epoch time: 59.05s (train: 56.85s, val: 2.19s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2271, accuracy: 0.9183, precision: 0.8649, recall: 0.9282, f1: 0.8900, auc_pr: 0.9451, time: 57.13s
+  Val   - loss: 0.1622, accuracy: 0.9315, precision: 0.8884, recall: 0.9401, f1: 0.9096, auc_pr: 0.9784, time: 2.20s
+  Total epoch time: 59.33s (train: 57.13s, val: 2.20s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1731, accuracy: 0.9298, precision: 0.8769, recall: 0.9373, f1: 0.9010, auc_pr: 0.9671, time: 57.07s
+  Val   - loss: 0.1315, accuracy: 0.9360, precision: 0.8924, recall: 0.9492, f1: 0.9154, auc_pr: 0.9821, time: 2.20s
+  Total epoch time: 59.27s (train: 57.07s, val: 2.20s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1429, accuracy: 0.9377, precision: 0.8866, recall: 0.9468, f1: 0.9104, auc_pr: 0.9738, time: 57.07s
+  Val   - loss: 0.1331, accuracy: 0.9390, precision: 0.8972, recall: 0.9477, f1: 0.9183, auc_pr: 0.9822, time: 2.21s
+  Total epoch time: 59.27s (train: 57.07s, val: 2.21s)
+Early stopping triggered after epoch 4
+Restored best model weights (best_val_loss: 0.1315)
+Training completed. History contains 4 epochs
+Finished training. val_accuracy: 0.9360, val_precision: 0.8924, val_recall: 0.9492, val_f1: 0.9154, val_auc_pr: 0.9821
+Average epoch time: 59.23 seconds (0.99 minutes) - train: 57.03s, val: 2.20s
+Inference time (on average): 2.20 seconds (0.04 minutes)
+Saving model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.0.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.0.pt
+Saved training plot: roberta_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.0.png
+Current best val_f1: 0.9128, this model: 0.9154
+New best model found! Val f1: 0.9154
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 10/16 - params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 16, 'weight_decay': 0.01}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=2e-05, weight_decay=0.01
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=2e-05, weight_decay=0.01
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 16, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.6439, accuracy: 0.7791, precision: 0.7263, recall: 0.7747, f1: 0.7458, auc_pr: 0.8198, time: 59.42s
+  Val   - loss: 0.2777, accuracy: 0.8965, precision: 0.8497, recall: 0.9181, f1: 0.8766, auc_pr: 0.9538, time: 2.19s
+  Total epoch time: 61.61s (train: 59.42s, val: 2.19s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2221, accuracy: 0.9147, precision: 0.8622, recall: 0.9264, f1: 0.8874, auc_pr: 0.9532, time: 59.21s
+  Val   - loss: 0.1772, accuracy: 0.9250, precision: 0.8813, recall: 0.9357, f1: 0.9030, auc_pr: 0.9762, time: 2.20s
+  Total epoch time: 61.41s (train: 59.21s, val: 2.20s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1766, accuracy: 0.9274, precision: 0.8756, recall: 0.9367, f1: 0.8998, auc_pr: 0.9669, time: 59.51s
+  Val   - loss: 0.1614, accuracy: 0.9225, precision: 0.8758, recall: 0.9380, f1: 0.9018, auc_pr: 0.9786, time: 2.20s
+  Total epoch time: 61.70s (train: 59.51s, val: 2.20s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1483, accuracy: 0.9341, precision: 0.8832, recall: 0.9430, f1: 0.9069, auc_pr: 0.9730, time: 58.56s
+  Val   - loss: 0.1641, accuracy: 0.9275, precision: 0.8821, recall: 0.9377, f1: 0.9054, auc_pr: 0.9753, time: 2.19s
+  Total epoch time: 60.75s (train: 58.56s, val: 2.19s)
+Early stopping triggered after epoch 4
+Restored best model weights (best_val_loss: 0.1614)
+Training completed. History contains 4 epochs
+Finished training. val_accuracy: 0.9225, val_precision: 0.8758, val_recall: 0.9380, val_f1: 0.9018, val_auc_pr: 0.9786
+Average epoch time: 61.37 seconds (1.02 minutes) - train: 59.17s, val: 2.20s
+Inference time (on average): 2.20 seconds (0.04 minutes)
+Saving model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.01.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+Saved training plot: roberta_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.01.png
+Current best val_f1: 0.9154, this model: 0.9018
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 11/16 - params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 32, 'weight_decay': 0.0}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=2e-05, weight_decay=0.0
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=2e-05, weight_decay=0.0
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 32, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 500 batches
+Val dataloader: 63 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.8385, accuracy: 0.6725, precision: 0.6298, recall: 0.6868, f1: 0.6398, auc_pr: 0.7389, time: 49.61s
+  Val   - loss: 0.3021, accuracy: 0.8915, precision: 0.8418, recall: 0.9156, f1: 0.8699, auc_pr: 0.9375, time: 1.98s
+  Total epoch time: 51.60s (train: 49.61s, val: 1.98s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2535, accuracy: 0.9093, precision: 0.8554, recall: 0.9234, f1: 0.8819, auc_pr: 0.9319, time: 49.84s
+  Val   - loss: 0.2206, accuracy: 0.9100, precision: 0.8538, recall: 0.9349, f1: 0.8832, auc_pr: 0.9664, time: 1.99s
+  Total epoch time: 51.84s (train: 49.84s, val: 1.99s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1863, accuracy: 0.9267, precision: 0.8741, recall: 0.9369, f1: 0.8989, auc_pr: 0.9593, time: 49.97s
+  Val   - loss: 0.1545, accuracy: 0.9335, precision: 0.8912, recall: 0.9454, f1: 0.9122, auc_pr: 0.9783, time: 1.99s
+  Total epoch time: 51.96s (train: 49.97s, val: 1.99s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1473, accuracy: 0.9372, precision: 0.8868, recall: 0.9467, f1: 0.9106, auc_pr: 0.9701, time: 49.97s
+  Val   - loss: 0.1582, accuracy: 0.9275, precision: 0.8847, recall: 0.9384, f1: 0.9057, auc_pr: 0.9788, time: 1.99s
+  Total epoch time: 51.96s (train: 49.97s, val: 1.99s)
+Early stopping triggered after epoch 4
+Restored best model weights (best_val_loss: 0.1545)
+Training completed. History contains 4 epochs
+Finished training. val_accuracy: 0.9335, val_precision: 0.8912, val_recall: 0.9454, val_f1: 0.9122, val_auc_pr: 0.9783
+Average epoch time: 51.84 seconds (0.86 minutes) - train: 49.85s, val: 1.99s
+Inference time (on average): 1.99 seconds (0.03 minutes)
+Saving model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.0.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.0.pt
+Saved training plot: roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.0.png
+Current best val_f1: 0.9154, this model: 0.9122
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 12/16 - params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 32, 'weight_decay': 0.01}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=2e-05, weight_decay=0.01
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=2e-05, weight_decay=0.01
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 32, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 500 batches
+Val dataloader: 63 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.7557, accuracy: 0.6993, precision: 0.6320, recall: 0.7245, f1: 0.6490, auc_pr: 0.7775, time: 49.94s
+  Val   - loss: 0.2732, accuracy: 0.9005, precision: 0.8577, recall: 0.9184, f1: 0.8799, auc_pr: 0.9549, time: 1.99s
+  Total epoch time: 51.93s (train: 49.94s, val: 1.99s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2438, accuracy: 0.9121, precision: 0.8575, recall: 0.9250, f1: 0.8837, auc_pr: 0.9420, time: 49.97s
+  Val   - loss: 0.2132, accuracy: 0.9195, precision: 0.8754, recall: 0.9323, f1: 0.8970, auc_pr: 0.9656, time: 1.99s
+  Total epoch time: 51.96s (train: 49.97s, val: 1.99s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1816, accuracy: 0.9275, precision: 0.8757, recall: 0.9373, f1: 0.9000, auc_pr: 0.9612, time: 49.98s
+  Val   - loss: 0.1610, accuracy: 0.9285, precision: 0.8839, recall: 0.9386, f1: 0.9049, auc_pr: 0.9779, time: 1.99s
+  Total epoch time: 51.97s (train: 49.98s, val: 1.99s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1457, accuracy: 0.9342, precision: 0.8823, recall: 0.9441, f1: 0.9066, auc_pr: 0.9732, time: 49.99s
+  Val   - loss: 0.1422, accuracy: 0.9340, precision: 0.8867, recall: 0.9477, f1: 0.9122, auc_pr: 0.9812, time: 2.00s
+  Total epoch time: 51.99s (train: 49.99s, val: 2.00s)
+
+Starting Epoch 5/10
+Epoch 5/10 results:
+	Train - loss: 0.1337, accuracy: 0.9386, precision: 0.8872, recall: 0.9484, f1: 0.9112, auc_pr: 0.9766, time: 49.98s
+  Val   - loss: 0.1404, accuracy: 0.9315, precision: 0.8866, recall: 0.9443, f1: 0.9103, auc_pr: 0.9814, time: 1.99s
+  Total epoch time: 51.97s (train: 49.98s, val: 1.99s)
+
+Starting Epoch 6/10
+Epoch 6/10 results:
+	Train - loss: 0.1195, accuracy: 0.9431, precision: 0.8924, recall: 0.9514, f1: 0.9160, auc_pr: 0.9802, time: 49.71s
+  Val   - loss: 0.1310, accuracy: 0.9385, precision: 0.8949, recall: 0.9461, f1: 0.9165, auc_pr: 0.9816, time: 2.00s
+  Total epoch time: 51.71s (train: 49.71s, val: 2.00s)
+
+Starting Epoch 7/10
+Epoch 7/10 results:
+	Train - loss: 0.1124, accuracy: 0.9450, precision: 0.8957, recall: 0.9547, f1: 0.9191, auc_pr: 0.9812, time: 49.97s
+  Val   - loss: 0.1353, accuracy: 0.9370, precision: 0.8922, recall: 0.9492, f1: 0.9162, auc_pr: 0.9808, time: 2.00s
+  Total epoch time: 51.97s (train: 49.97s, val: 2.00s)
+Early stopping triggered after epoch 7
+Restored best model weights (best_val_loss: 0.1310)
+Training completed. History contains 7 epochs
+Finished training. val_accuracy: 0.9385, val_precision: 0.8949, val_recall: 0.9461, val_f1: 0.9165, val_auc_pr: 0.9816
+Average epoch time: 51.93 seconds (0.87 minutes) - train: 49.93s, val: 1.99s
+Inference time (on average): 1.99 seconds (0.03 minutes)
+Saving model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+Saved training plot: roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.png
+Current best val_f1: 0.9154, this model: 0.9165
+New best model found! Val f1: 0.9165
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 13/16 - params: {'dropout_rate': 0.3, 'lr': 3e-05, 'batch_size': 16, 'weight_decay': 0.0}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=3e-05, weight_decay=0.0
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=3e-05, weight_decay=0.0
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 16, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.5871, accuracy: 0.7874, precision: 0.7186, recall: 0.7963, f1: 0.7461, auc_pr: 0.8414, time: 56.96s
+  Val   - loss: 0.2345, accuracy: 0.9175, precision: 0.8717, recall: 0.9221, f1: 0.8907, auc_pr: 0.9645, time: 2.19s
+  Total epoch time: 59.15s (train: 56.96s, val: 2.19s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2153, accuracy: 0.9168, precision: 0.8631, recall: 0.9269, f1: 0.8883, auc_pr: 0.9513, time: 57.07s
+  Val   - loss: 0.2965, accuracy: 0.8730, precision: 0.8271, recall: 0.9062, f1: 0.8469, auc_pr: 0.9612, time: 2.22s
+  Total epoch time: 59.29s (train: 57.07s, val: 2.22s)
+Early stopping triggered after epoch 2
+Restored best model weights (best_val_loss: 0.2345)
+Training completed. History contains 2 epochs
+Finished training. val_accuracy: 0.9175, val_precision: 0.8717, val_recall: 0.9221, val_f1: 0.8907, val_auc_pr: 0.9645
+Average epoch time: 59.22 seconds (0.99 minutes) - train: 57.01s, val: 2.21s
+Inference time (on average): 2.21 seconds (0.04 minutes)
+Saving model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.0.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.0.pt
+Saved training plot: roberta_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.0.png
+Current best val_f1: 0.9165, this model: 0.8907
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 14/16 - params: {'dropout_rate': 0.3, 'lr': 3e-05, 'batch_size': 16, 'weight_decay': 0.01}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=3e-05, weight_decay=0.01
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=3e-05, weight_decay=0.01
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 16, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 1000 batches
+Val dataloader: 125 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.6170, accuracy: 0.7874, precision: 0.7261, recall: 0.7860, f1: 0.7466, auc_pr: 0.8228, time: 58.43s
+  Val   - loss: 0.2723, accuracy: 0.8975, precision: 0.8393, recall: 0.9218, f1: 0.8676, auc_pr: 0.9463, time: 2.20s
+  Total epoch time: 60.63s (train: 58.43s, val: 2.20s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2231, accuracy: 0.9167, precision: 0.8640, recall: 0.9258, f1: 0.8885, auc_pr: 0.9512, time: 59.62s
+  Val   - loss: 0.1946, accuracy: 0.9195, precision: 0.8726, recall: 0.9364, f1: 0.8986, auc_pr: 0.9715, time: 2.19s
+  Total epoch time: 61.82s (train: 59.62s, val: 2.19s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1701, accuracy: 0.9271, precision: 0.8749, recall: 0.9376, f1: 0.8997, auc_pr: 0.9659, time: 59.06s
+  Val   - loss: 0.1642, accuracy: 0.9235, precision: 0.8741, recall: 0.9381, f1: 0.8999, auc_pr: 0.9769, time: 2.20s
+  Total epoch time: 61.27s (train: 59.06s, val: 2.20s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1547, accuracy: 0.9336, precision: 0.8822, recall: 0.9427, f1: 0.9060, auc_pr: 0.9708, time: 59.00s
+  Val   - loss: 0.1528, accuracy: 0.9320, precision: 0.8866, recall: 0.9453, f1: 0.9098, auc_pr: 0.9777, time: 2.21s
+  Total epoch time: 61.20s (train: 59.00s, val: 2.21s)
+
+Starting Epoch 5/10
+Epoch 5/10 results:
+	Train - loss: 0.1457, accuracy: 0.9352, precision: 0.8824, recall: 0.9438, f1: 0.9067, auc_pr: 0.9732, time: 59.51s
+  Val   - loss: 0.1825, accuracy: 0.9250, precision: 0.8754, recall: 0.9390, f1: 0.9001, auc_pr: 0.9746, time: 2.21s
+  Total epoch time: 61.72s (train: 59.51s, val: 2.21s)
+Early stopping triggered after epoch 5
+Restored best model weights (best_val_loss: 0.1528)
+Training completed. History contains 5 epochs
+Finished training. val_accuracy: 0.9320, val_precision: 0.8866, val_recall: 0.9453, val_f1: 0.9098, val_auc_pr: 0.9777
+Average epoch time: 61.33 seconds (1.02 minutes) - train: 59.12s, val: 2.20s
+Inference time (on average): 2.20 seconds (0.04 minutes)
+Saving model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.01.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.01.pt
+Saved training plot: roberta_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.01.png
+Current best val_f1: 0.9165, this model: 0.9098
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 15/16 - params: {'dropout_rate': 0.3, 'lr': 3e-05, 'batch_size': 32, 'weight_decay': 0.0}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=3e-05, weight_decay=0.0
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=3e-05, weight_decay=0.0
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 32, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 500 batches
+Val dataloader: 63 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.8896, accuracy: 0.6331, precision: 0.5750, recall: 0.6523, f1: 0.5852, auc_pr: 0.7096, time: 49.94s
+  Val   - loss: 0.3151, accuracy: 0.8680, precision: 0.8286, recall: 0.8943, f1: 0.8490, auc_pr: 0.9200, time: 1.99s
+  Total epoch time: 51.93s (train: 49.94s, val: 1.99s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2572, accuracy: 0.9038, precision: 0.8483, recall: 0.9167, f1: 0.8747, auc_pr: 0.9252, time: 49.97s
+  Val   - loss: 0.2026, accuracy: 0.9205, precision: 0.8719, recall: 0.9336, f1: 0.8949, auc_pr: 0.9656, time: 2.00s
+  Total epoch time: 51.97s (train: 49.97s, val: 2.00s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.1833, accuracy: 0.9264, precision: 0.8721, recall: 0.9371, f1: 0.8973, auc_pr: 0.9583, time: 49.99s
+  Val   - loss: 0.1562, accuracy: 0.9250, precision: 0.8745, recall: 0.9435, f1: 0.9022, auc_pr: 0.9761, time: 1.99s
+  Total epoch time: 51.98s (train: 49.99s, val: 1.99s)
+
+Starting Epoch 4/10
+Epoch 4/10 results:
+	Train - loss: 0.1591, accuracy: 0.9303, precision: 0.8757, recall: 0.9418, f1: 0.9011, auc_pr: 0.9704, time: 49.97s
+  Val   - loss: 0.1594, accuracy: 0.9230, precision: 0.8699, recall: 0.9437, f1: 0.8987, auc_pr: 0.9775, time: 2.00s
+  Total epoch time: 51.97s (train: 49.97s, val: 2.00s)
+Early stopping triggered after epoch 4
+Restored best model weights (best_val_loss: 0.1562)
+Training completed. History contains 4 epochs
+Finished training. val_accuracy: 0.9250, val_precision: 0.8745, val_recall: 0.9435, val_f1: 0.9022, val_auc_pr: 0.9761
+Average epoch time: 51.96 seconds (0.87 minutes) - train: 49.97s, val: 2.00s
+Inference time (on average): 2.00 seconds (0.03 minutes)
+Saving model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.0.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.0.pt
+Saved training plot: roberta_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.0.png
+Current best val_f1: 0.9165, this model: 0.9022
+Checkpoint saved to ./results/training_checkpoint.json
+
+============================================================
+ROBERTA Model 16/16 - params: {'dropout_rate': 0.3, 'lr': 3e-05, 'batch_size': 32, 'weight_decay': 0.01}
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=3e-05, weight_decay=0.01
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=3e-05, weight_decay=0.01
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 32, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 500 batches
+Val dataloader: 63 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.6737, accuracy: 0.7589, precision: 0.6964, recall: 0.7671, f1: 0.7219, auc_pr: 0.8053, time: 49.95s
+  Val   - loss: 0.2487, accuracy: 0.9125, precision: 0.8640, recall: 0.9225, f1: 0.8881, auc_pr: 0.9519, time: 1.99s
+  Total epoch time: 51.93s (train: 49.95s, val: 1.99s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.2367, accuracy: 0.9124, precision: 0.8569, recall: 0.9242, f1: 0.8829, auc_pr: 0.9364, time: 49.98s
+  Val   - loss: 0.1805, accuracy: 0.9195, precision: 0.8703, recall: 0.9337, f1: 0.8959, auc_pr: 0.9705, time: 2.00s
+  Total epoch time: 51.98s (train: 49.98s, val: 2.00s)
+
+Starting Epoch 3/10
+Epoch 3/10 results:
+	Train - loss: 0.2003, accuracy: 0.9207, precision: 0.8667, recall: 0.9316, f1: 0.8918, auc_pr: 0.9523, time: 49.98s
+  Val   - loss: 0.2034, accuracy: 0.9200, precision: 0.8733, recall: 0.9292, f1: 0.8954, auc_pr: 0.9680, time: 2.00s
+  Total epoch time: 51.98s (train: 49.98s, val: 2.00s)
+Early stopping triggered after epoch 3
+Restored best model weights (best_val_loss: 0.1805)
+Training completed. History contains 3 epochs
+Finished training. val_accuracy: 0.9195, val_precision: 0.8703, val_recall: 0.9337, val_f1: 0.8959, val_auc_pr: 0.9705
+Average epoch time: 51.96 seconds (0.87 minutes) - train: 49.97s, val: 2.00s
+Inference time (on average): 2.00 seconds (0.03 minutes)
+Saving model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt...
+Saved ROBERTA model to ./hp_models/roberta_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt
+Saved training plot: roberta_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.png
+Current best val_f1: 0.9165, this model: 0.8959
+Checkpoint saved to ./results/training_checkpoint.json
+
+Hyperparameter search completed in 7173.59 seconds (119.56 minutes)
+Total combinations: 16 | Trained: 16 | Skipped: 0
+Best val_f1: 0.9165
+
+ROBERTA Classification Report:
+
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.96      0.97       550
+         joy       0.99      0.92      0.95       704
+        love       0.81      0.98      0.88       178
+       anger       0.94      0.95      0.95       275
+        fear       0.89      0.88      0.89       212
+     suprise       0.76      0.99      0.86        81
+
+    accuracy                           0.94      2000
+   macro avg       0.89      0.95      0.92      2000
+weighted avg       0.94      0.94      0.94      2000
+
+Saved best ROBERTA model report to ./results/roberta_best_model_report.txt
+Saved confusion matrix plot: roberta_confusion_matrix_(counts)_roberta.png
+Saved confusion matrix plot: roberta_confusion_matrix_(normalized)_roberta.png
+Saving summary to ./results/hp_results_roberta.json...
+Saved ROBERTA hyperparameter search summary to ./results/hp_results_roberta.json
+
+======================================================================
+Model Comparison Summary
+======================================================================
+Collecting results from all models...
+BERT summary available: True
+ELECTRA summary available: True
+RoBERTa summary available: True
+
+Using RoBERTa model (val_f1: 0.9165) for compressions
+Best model path: ./hp_models/roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+Starting 2 compressions for best ROBERTA model
+Loaded checkpoint from ./results/training_checkpoint.json
+Previously completed: ['bert_{"batch_size": 16, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 16, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 32, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 32, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 16, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 16, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 32, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 32, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 16, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 16, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 32, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 32, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 16, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 16, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.01}', 'bert_{"batch_size": 32, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.0}', 'bert_{"batch_size": 32, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 16, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 16, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 32, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 32, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 16, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 16, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 32, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 32, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 16, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 16, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 32, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 32, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 16, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 16, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.01}', 'electra_{"batch_size": 32, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.0}', 'electra_{"batch_size": 32, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 16, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 16, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 32, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 32, "dropout_rate": 0.1, "lr": 2e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 16, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 16, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 32, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 32, "dropout_rate": 0.1, "lr": 3e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 16, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 16, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 32, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 32, "dropout_rate": 0.3, "lr": 2e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 16, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 16, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.01}', 'roberta_{"batch_size": 32, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.0}', 'roberta_{"batch_size": 32, "dropout_rate": 0.3, "lr": 3e-05, "weight_decay": 0.01}'] models
+Preparing data with max_length=128...
+
+Starting data preparation for ROBERTA
+Input texts count: 16000
+Max length: 128
+Labels provided: True
+
+Preparing ROBERTA data using roberta-base...
+Loading tokenizer... (downloading if first time)
+RoBERTa tokenizer loaded.
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (16000,), dtype: int64
+ROBERTA data prepared. Input shape: (16000, 128)
+Input IDs dtype: int64, range: [0, 49641]
+Attention mask shape: (16000, 128)
+
+Starting data preparation for ROBERTA
+Input texts count: 2000
+Max length: 128
+Labels provided: True
+
+Preparing ROBERTA data using roberta-base...
+Loading tokenizer... (downloading if first time)
+RoBERTa tokenizer loaded.
+Tokenizing texts with max_length=128...
+Tokenization complete
+Labels shape: (2000,), dtype: int64
+ROBERTA data prepared. Input shape: (2000, 128)
+Input IDs dtype: int64, range: [0, 49552]
+Attention mask shape: (2000, 128)
+Compressions of best model started at 2026-01-29 20:56:15
+Restore best model...
+
+Building ROBERTA model...
+Parameters: num_classes=6, dropout_rate=0.3, lr=2e-05, weight_decay=0.01
+Initializing TransformerClassifier: type=roberta, model_name=roberta-base, num_classes=6, dropout_rate=0.3
+Loading pretrained ROBERTA model from roberta-base...
+ROBERTA base model loaded successfully
+Transformer hidden size: 768
+Classification head: 768 -> 128 -> 6
+Moving model to device: cuda
+CUDA available: NVIDIA RTX 6000 Ada Generation
+Optimizer created: AdamW with lr=2e-05, weight_decay=0.01
+ROBERTA model built successfully!
+Model device: cuda
+Total parameters: 124,744,838
+Trainable parameters: 124,744,838
+Compression 1 - pruning
+Training new pruned model...
+
+Starting training...
+Training samples: 16000, Validation samples: 2000
+Epochs: 10, Batch size: 32, Patience: 1
+Converting data to tensors...
+Train tensors - input_ids: torch.Size([16000, 128]), attention_mask: torch.Size([16000, 128]), labels: torch.Size([16000])
+Val tensors - input_ids: torch.Size([2000, 128]), attention_mask: torch.Size([2000, 128]), labels: torch.Size([2000])
+Train dataloader: 500 batches
+Val dataloader: 63 batches
+Class distribution: [4666 5362 1304 2159 1937  572]
+Class weights: [0.5715102  0.49732688 2.0449898  1.2351397  1.3766993  4.6620045 ]
+
+Beginning training loop...
+
+Starting Epoch 1/10
+Epoch 1/10 results:
+	Train - loss: 0.5528, accuracy: 0.8482, precision: 0.8542, recall: 0.7888, f1: 0.8065, auc_pr: 0.9161, time: 44.95s
+  Val   - loss: 0.2287, accuracy: 0.9210, precision: 0.8875, recall: 0.9131, f1: 0.8979, auc_pr: 0.9722, time: 2.01s
+  Total epoch time: 46.96s (train: 44.95s, val: 2.01s)
+
+Starting Epoch 2/10
+Epoch 2/10 results:
+	Train - loss: 0.5404, accuracy: 0.8477, precision: 0.8537, recall: 0.7945, f1: 0.8106, auc_pr: 0.9186, time: 45.02s
+  Val   - loss: 0.2287, accuracy: 0.9210, precision: 0.8875, recall: 0.9131, f1: 0.8979, auc_pr: 0.9722, time: 2.01s
+  Total epoch time: 47.03s (train: 45.02s, val: 2.01s)
+Early stopping triggered after epoch 2
+Restored best model weights (best_val_loss: 0.2287)
+Training completed. History contains 2 epochs
+Finished. val_accuracy: 0.9210, val_precision: 0.8875, val_recall: 0.9131, val_f1: 0.8979, val_auc_pr: 0.9722
+Average epoch time: 47.00 seconds (0.78 minutes) - train: 44.99s, val: 2.01s
+Inference time: 2.01 seconds (0.03 minutes)
+Saving prune model to ./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt...
+Saved prune ROBERTA model to ./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+Saved training plot: prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.png
+
+Prune ROBERTA Classification Report:
+
+              precision    recall  f1-score   support
+
+     sadness       0.97      0.95      0.96       550
+         joy       0.94      0.93      0.93       704
+        love       0.81      0.84      0.82       178
+       anger       0.90      0.97      0.93       275
+        fear       0.92      0.83      0.87       212
+     suprise       0.78      0.98      0.87        81
+
+    accuracy                           0.92      2000
+   macro avg       0.89      0.91      0.90      2000
+weighted avg       0.92      0.92      0.92      2000
+
+Saved prune best ROBERTA model report to ./results/prune_roberta_best_model_report.txt
+Saved confusion matrix plot: roberta_confusion_matrix_(counts)_pruneroberta.png
+Saved confusion matrix plot: roberta_confusion_matrix_(normalized)_pruneroberta.png
+Compression 2 - quantization
+Note: Quantized models run on CPU (PyTorch qint8 limitation)
+Creating new quantized model...
+Saving quantize model to ./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt...
+Saved quantize ROBERTA model to ./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+======================================================================
+Evaluating quantize_best ROBERTA Model
+======================================================================
+Recreating model architecture: roberta, 6 classes
+Quantized model: using CPU (PyTorch qint8 limitation)
+Model moved to cpu
+Preparing data with max_length=128...
+Data shape: torch.Size([2000, 128])
+Making predictions on 2000 samples...
+Processing 63 batches with batch_size=32
+  Processing batch 1/63...
+  Processing batch 26/63...
+  Processing batch 51/63...
+Predictions complete!
+Predictions shape: (2000,), probabilities shape: (2000, 6)
+Prediction range: [0, 5], unique predictions: 6
+Calculating metrics...
+
+ROBERTA Metrics:
+  Accuracy:  0.9355
+  Macro F1:  0.9157
+  Precision: 0.8931
+  Recall:    0.9466
+  Auc_PR:    0.9808
+
+Quantize ROBERTA Classification Report:
+
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.95      0.96       550
+         joy       0.99      0.91      0.95       704
+        love       0.81      0.99      0.89       178
+       anger       0.94      0.96      0.95       275
+        fear       0.89      0.88      0.88       212
+     suprise       0.76      0.99      0.86        81
+
+    accuracy                           0.94      2000
+   macro avg       0.89      0.95      0.92      2000
+weighted avg       0.94      0.94      0.94      2000
+
+Saved quantize best ROBERTA model report to ./results/quantize_roberta_best_model_report.txt
+Saved confusion matrix plot: roberta_confusion_matrix_(counts)_quantizeroberta.png
+Saved confusion matrix plot: roberta_confusion_matrix_(normalized)_quantizeroberta.png
+Saving compressions summary to ./results/compressions_results_roberta.json...
+Saved ROBERTA compressions summary to ./results/compressions_results_roberta.json
+
+========================================================================================================================
+                                        COMPREHENSIVE MODEL COMPARISON
+========================================================================================================================
+Model        Val F1     Parameters      Size (MB)    Val Time        Total Time     
+------------------------------------------------------------------------------------------------------------------------
+RoBERTa      0.9165     124,744,838     475.96       2.0s            119.6min       
+BERT         0.9163     109,581,446     418.11       2.2s            0.0min         
+Quantize RoBERTa 0.9157     39,037,440      231.07       44.3s           0.0min         
+ELECTRA      0.9147     13,516,678      51.65        0.3s            16.4min        
+Prune RoBERTa 0.8979     124,744,838     475.96       2.0s            1.6min         
+========================================================================================================================
+
+Detailed Model Rankings (by validation f1):
+----------------------------------------------------------------------
+1. RoBERTa: 0.9165
+   Metrics - Accuracy: 0.9385, Precision: 0.8949, Recall: 0.9461, F1: 0.9165, AUC-PR: 0.9816
+   Best params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 32, 'weight_decay': 0.01}
+   Model size: 475.96 MB (124,744,838 parameters)
+   Inference time: 1.99 seconds (0.03 minutes)
+   Total time (all models): 119.56 minutes
+   Model path: ./hp_models/roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+2. BERT: 0.9163
+   Metrics - Accuracy: 0.9380, Precision: 0.8939, Recall: 0.9489, F1: 0.9163, AUC-PR: 0.9814
+   Best params: {'dropout_rate': 0.3, 'lr': 3e-05, 'batch_size': 32, 'weight_decay': 0.01}
+   Model size: 418.11 MB (109,581,446 parameters)
+   Inference time: 2.21 seconds (0.04 minutes)
+   Total time (all models): 0.00 minutes
+   Model path: ./hp_models/bert_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt
+
+3. Quantize RoBERTa: 0.9157
+   Metrics - Accuracy: 0.9355, Precision: 0.8931, Recall: 0.9466, F1: 0.9157, AUC-PR: 0.9808
+   Best params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 32, 'weight_decay': 0.01}
+   Model size: 231.07 MB (39,037,440 parameters)
+   Inference time: 44.34 seconds (0.74 minutes)
+   Total time (all models): 0.00 minutes
+   Model path: ./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+4. ELECTRA: 0.9147
+   Metrics - Accuracy: 0.9355, Precision: 0.8923, Recall: 0.9466, F1: 0.9147, AUC-PR: 0.9802
+   Best params: {'dropout_rate': 0.3, 'lr': 3e-05, 'batch_size': 32, 'weight_decay': 0.01}
+   Model size: 51.65 MB (13,516,678 parameters)
+   Inference time: 0.33 seconds (0.01 minutes)
+   Total time (all models): 16.38 minutes
+   Model path: ./hp_models/electra_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt
+
+5. Prune RoBERTa: 0.8979
+   Metrics - Accuracy: 0.9210, Precision: 0.8875, Recall: 0.9131, F1: 0.8979, AUC-PR: 0.9722
+   Best params: {'dropout_rate': 0.3, 'lr': 2e-05, 'batch_size': 32, 'weight_decay': 0.01}
+   Model size: 475.96 MB (124,744,838 parameters)
+   Inference time: 2.01 seconds (0.03 minutes)
+   Total time (all models): 1.63 minutes
+   Model path: ./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+Saved model comparison to ./results/model_comparison.json
+Saved model comparison table to ./results/model_comparison.csv
+
+======================================================================
+Pipeline Complete!
+======================================================================
+Results saved to: ./results
+Models saved to: ./hp_models
+Pipeline finished at: 2026-01-29 20:58:39

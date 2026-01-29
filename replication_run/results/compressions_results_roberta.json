@@ -1,0 +1,82 @@
+{
+  "prune": {
+    "best_model_info": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.921,
+      "val_precision": 0.8874857283125497,
+      "val_recall": 0.9130901349926214,
+      "val_f1": 0.8978765491739766,
+      "val_auc_pr": 0.9722353308298116,
+      "model_path": "./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.010522324591875,
+      "model_size_mb": 475.9572448730469,
+      "total_parameters": 124744838
+    },
+    "all_results": [
+      {
+        "params": {
+          "dropout_rate": 0.3,
+          "lr": 2e-05,
+          "batch_size": 32,
+          "weight_decay": 0.01
+        },
+        "val_accuracy": 0.921,
+        "val_precision": 0.8874857283125497,
+        "val_recall": 0.9130901349926214,
+        "val_f1": 0.8978765491739766,
+        "val_auc_pr": 0.9722353308298116,
+        "model_path": "./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+        "val_run_time_seconds": 2.010522324591875,
+        "model_size_mb": 475.9572448730469,
+        "total_parameters": 124744838
+      }
+    ],
+    "total_training_time_seconds": 97.7914559841156,
+    "num_models_trained": 1
+  },
+  "quantize": {
+    "best_model_info": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9355,
+      "val_precision": 0.8931306748245307,
+      "val_recall": 0.9465860941503857,
+      "val_f1": 0.9156606216292079,
+      "val_auc_pr": 0.980815790648716,
+      "model_path": "./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 44.34317499399185,
+      "model_size_mb": 231.06830883026123,
+      "total_parameters": 39037440
+    },
+    "all_results": [
+      {
+        "params": {
+          "dropout_rate": 0.3,
+          "lr": 2e-05,
+          "batch_size": 32,
+          "weight_decay": 0.01
+        },
+        "val_accuracy": 0.9355,
+        "val_precision": 0.8931306748245307,
+        "val_recall": 0.9465860941503857,
+        "val_f1": 0.9156606216292079,
+        "val_auc_pr": 0.980815790648716,
+        "model_path": "./hp_models/quantize_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+        "val_run_time_seconds": 44.34317499399185,
+        "model_size_mb": 231.06830883026123,
+        "total_parameters": 39037440
+      }
+    ],
+    "total_training_time_seconds": 0.0,
+    "num_models_trained": 1
+  }
+}

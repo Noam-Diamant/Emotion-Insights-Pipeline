@@ -1,0 +1,33 @@
+Prune best ROBERTA model path: ./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt
+
+{
+  "params": {
+    "dropout_rate": 0.3,
+    "lr": 2e-05,
+    "batch_size": 32,
+    "weight_decay": 0.01
+  },
+  "val_accuracy": 0.921,
+  "val_precision": 0.8874857283125497,
+  "val_recall": 0.9130901349926214,
+  "val_f1": 0.8978765491739766,
+  "val_auc_pr": 0.9722353308298116,
+  "model_path": "./hp_models/prune_roberta_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+  "val_run_time_seconds": 2.010522324591875,
+  "model_size_mb": 475.9572448730469,
+  "total_parameters": 124744838
+}
+
+Validation Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.97      0.95      0.96       550
+         joy       0.94      0.93      0.93       704
+        love       0.81      0.84      0.82       178
+       anger       0.90      0.97      0.93       275
+        fear       0.92      0.83      0.87       212
+     suprise       0.78      0.98      0.87        81
+
+    accuracy                           0.92      2000
+   macro avg       0.89      0.91      0.90      2000
+weighted avg       0.92      0.92      0.92      2000
