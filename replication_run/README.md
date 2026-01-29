@@ -40,7 +40,7 @@ This creates a virtual environment (`.venv`), installs PyTorch with CUDA 12.1, a
 
 **Activate and run:**
 ```bash
-source .venv/bin/activate
+source emotion_env/bin/activate
 python project_part_b.py
 ```
 
@@ -55,11 +55,6 @@ Expected output:
 ```
 CUDA available: True
 Device: NVIDIA TITAN RTX
-```
-
-Monitor GPU usage during training:
-```bash
-watch -n 1 nvidia-smi
 ```
 
 ### Training Mode
@@ -112,43 +107,6 @@ python project_part_b.py
 
 ---
 
-## Configuration
-
-Edit these parameters in `project_part_b.py`:
-
-```python
-# Data paths
-TRAIN_FILE = "./data/train.csv"
-VALIDATION_FILE = "./data/validation.csv"
-
-# Output folders
-RESULTS_FOLDER = "./results"
-SAVE_MODELS_FOLDER = "./hp_models"
-
-# Hyperparameter grid
-PARAM_GRID = {
-    "dropout_rate": [0.1, 0.3],
-    "lr": [2e-5, 3e-5],
-    "batch_size": [16, 32],
-    "weight_decay": [0.0, 0.01],
-}
-
-# Settings
-MAX_LENGTH = 128          # Maximum sequence length
-NUM_CLASSES = 6           # Number of emotion classes
-NUM_EPOCHS = 30           # Maximum epochs per model configuration
-```
-
-**Quick test** with fewer models:
-```python
-hp_summary_bert = hyperparameter_search(
-    ...
-    max_models=2,  # Train only 2 configs
-)
-```
-
----
-
 ## Output Structure
 
 ### `./results/` folder:
@@ -163,27 +121,6 @@ hp_summary_bert = hyperparameter_search(
 - `<model>_<params>.pt`: Trained model weights
 - `prune_<model>_<params>.pt`: Pruned models
 - `quantize_<model>_<params>.pt`: Quantized models
-
----
-
-## Performance
-
-- **Runtime**: ~6-12 hours with GPU for full pipeline (48 configs + compression)
-- **GPU**: Automatically detected and used (CUDA required)
-- **Fallback**: CPU if no GPU (not recommended)
-
----
-
-## Dependencies
-
-| Package | Purpose |
-|---------|---------|
-| torch | Deep learning framework with CUDA |
-| transformers | BERT, ELECTRA, RoBERTa models |
-| numpy | Numerical computing |
-| pandas | Data manipulation |
-| scikit-learn | Metrics and evaluation |
-| matplotlib | Plotting and visualization |
 
 ---
 
@@ -209,41 +146,12 @@ cd /path/to/Emotion-Insights-Pipeline/replication_run
 python project_part_b.py
 ```
 
-### Out of GPU memory
-Reduce batch size in `PARAM_GRID`:
-```python
-"batch_size": [8, 16],  # Instead of [16, 32]
-```
-
 ### Virtual environment not activated
 Make sure to activate:
 ```bash
-source .venv/bin/activate
+source emotion_env/bin/activate
 which python  # Should show: .../replication_run/.venv/bin/python
 ```
-
-### Inference errors
-- Don't rename model weight files (script extracts config from filename)
-- Verify test CSV format matches train/validation
-- Check `NUM_CLASSES = 6` matches your model
-
----
-
-## Clean Up
-
-Remove the environment:
-```bash
-deactivate
-rm -rf .venv
-```
-
-Start fresh:
-```bash
-rm -rf .venv
-./setup_env.sh
-```
-
----
 
 ## Folder Structure
 
@@ -261,10 +169,3 @@ replication_run/
 ```
 
 ---
-
-## Notes
-
-- All outputs are isolated from parent directory
-- Output capture is automatic (no need for manual redirection)
-- Model filenames encode hyperparameters (don't rename)
-- Pruned models are retrained; quantized models are not
