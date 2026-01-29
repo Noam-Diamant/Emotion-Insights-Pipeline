@@ -108,6 +108,7 @@ PARAM_GRID = {
 NUM_CLASSES = 6
 CLASS_NAMES = ["sadness", "joy", "love", "anger", "fear", "suprise"]
 NUM_EPOCHS = 6
+PATIENCE = 1  # Early stopping patience (epochs without improvement before stopping)
 FREEZE_TRANSFORMER = False  # Set to True to freeze transformer weights during training
 
 ### Inference test data section
@@ -306,14 +307,23 @@ def plot_history(history, title="Training History"):
     val_auc_pr = history.get("val_auc_pr", [])
 
     epochs = range(1, len(loss) + 1)
+    
+    # Determine plot style based on number of epochs
+    # Use markers only for single epoch, lines for multiple epochs
+    if len(loss) == 1:
+        train_style = "bo"  # Blue circle marker only
+        val_style = "ro"    # Red circle marker only
+    else:
+        train_style = "b-"  # Blue line
+        val_style = "r--"   # Red dashed line
 
     # Create a figure with multiple subplots
     fig, axes = plt.subplots(2, 3, figsize=(18, 10))
     fig.suptitle(title, fontsize=16)
 
     # Loss
-    axes[0, 0].plot(epochs, loss, "b-", label="Training loss")
-    axes[0, 0].plot(epochs, val_loss, "r--", label="Validation loss")
+    axes[0, 0].plot(epochs, loss, train_style, label="Training loss", markersize=8)
+    axes[0, 0].plot(epochs, val_loss, val_style, label="Validation loss", markersize=8)
     axes[0, 0].set_title("Loss")
     axes[0, 0].set_xlabel("Epochs")
     axes[0, 0].set_ylabel("Loss")
@@ -321,8 +331,8 @@ def plot_history(history, title="Training History"):
     axes[0, 0].grid(True, alpha=0.3)
 
     # Accuracy
-    axes[0, 1].plot(epochs, acc, "b-", label="Training accuracy")
-    axes[0, 1].plot(epochs, val_acc, "r--", label="Validation accuracy")
+    axes[0, 1].plot(epochs, acc, train_style, label="Training accuracy", markersize=8)
+    axes[0, 1].plot(epochs, val_acc, val_style, label="Validation accuracy", markersize=8)
     axes[0, 1].set_title("Accuracy")
     axes[0, 1].set_xlabel("Epochs")
     axes[0, 1].set_ylabel("Accuracy")
@@ -331,8 +341,8 @@ def plot_history(history, title="Training History"):
 
     # Precision
     if precision and val_precision:
-        axes[0, 2].plot(epochs, precision, "b-", label="Training precision")
-        axes[0, 2].plot(epochs, val_precision, "r--", label="Validation precision")
+        axes[0, 2].plot(epochs, precision, train_style, label="Training precision", markersize=8)
+        axes[0, 2].plot(epochs, val_precision, val_style, label="Validation precision", markersize=8)
         axes[0, 2].set_title("Precision (Macro)")
         axes[0, 2].set_xlabel("Epochs")
         axes[0, 2].set_ylabel("Precision")
@@ -341,8 +351,8 @@ def plot_history(history, title="Training History"):
 
     # Recall
     if recall and val_recall:
-        axes[1, 0].plot(epochs, recall, "b-", label="Training recall")
-        axes[1, 0].plot(epochs, val_recall, "r--", label="Validation recall")
+        axes[1, 0].plot(epochs, recall, train_style, label="Training recall", markersize=8)
+        axes[1, 0].plot(epochs, val_recall, val_style, label="Validation recall", markersize=8)
         axes[1, 0].set_title("Recall (Macro)")
         axes[1, 0].set_xlabel("Epochs")
         axes[1, 0].set_ylabel("Recall")
@@ -351,8 +361,8 @@ def plot_history(history, title="Training History"):
 
     # F1 Score
     if f1 and val_f1:
-        axes[1, 1].plot(epochs, f1, "b-", label="Training F1")
-        axes[1, 1].plot(epochs, val_f1, "r--", label="Validation F1")
+        axes[1, 1].plot(epochs, f1, train_style, label="Training F1", markersize=8)
+        axes[1, 1].plot(epochs, val_f1, val_style, label="Validation F1", markersize=8)
         axes[1, 1].set_title("F1 Score (Macro)")
         axes[1, 1].set_xlabel("Epochs")
         axes[1, 1].set_ylabel("F1 Score")
@@ -361,8 +371,8 @@ def plot_history(history, title="Training History"):
 
     # AUC-PR
     if auc_pr and val_auc_pr:
-        axes[1, 2].plot(epochs, auc_pr, "b-", label="Training AUC-PR")
-        axes[1, 2].plot(epochs, val_auc_pr, "r--", label="Validation AUC-PR")
+        axes[1, 2].plot(epochs, auc_pr, train_style, label="Training AUC-PR", markersize=8)
+        axes[1, 2].plot(epochs, val_auc_pr, val_style, label="Validation AUC-PR", markersize=8)
         axes[1, 2].set_title("AUC-PR (Macro)")
         axes[1, 2].set_xlabel("Epochs")
         axes[1, 2].set_ylabel("AUC-PR")
@@ -572,7 +582,7 @@ def build_model(model_type="bert", dropout_rate=0.1, lr=2e-5, weight_decay=0.0, 
     return model, optimizer, device
 
 
-def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=16, patience=3):
+def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=16, patience=PATIENCE):
     """
     Train a PyTorch model with early stopping.
 
@@ -658,7 +668,7 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
     # Training loop
     print(f"\nBeginning training loop...")
     for epoch in range(epochs):
-        print(f"\nEpoch {epoch + 1}/{epochs}")
+        print(f"\nStarting Epoch {epoch + 1}/{epochs}")
         # Training phase
         model.train()
         train_loss = 0.0
@@ -693,9 +703,6 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
             train_all_labels.extend(batch_labels.cpu().numpy())
             train_all_probs.append(torch.softmax(outputs, dim=1).detach().cpu().numpy())
             
-            if batch_idx == 0:
-                print(f"  First batch - loss: {loss.item():.4f}, batch_size: {batch_labels.size(0)}")
-
         if device.type == "cuda":
             torch.cuda.synchronize()
         train_run_time = time.perf_counter() - train_start_time
@@ -711,7 +718,7 @@ def train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs
         train_labels_bin = label_binarize(train_all_labels, classes=range(NUM_CLASSES))
         train_auc_pr = average_precision_score(train_labels_bin, train_all_probs, average="macro")
         
-        print(f"  Train - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, precision: {train_precision:.4f}, recall: {train_recall:.4f}, f1: {train_f1:.4f}, auc_pr: {train_auc_pr:.4f}, time: {train_run_time:.2f}s")
+        print(f"Epoch {epoch + 1}/{epochs} results:\n\tTrain - loss: {train_loss:.4f}, accuracy: {train_acc:.4f}, precision: {train_precision:.4f}, recall: {train_recall:.4f}, f1: {train_f1:.4f}, auc_pr: {train_auc_pr:.4f}, time: {train_run_time:.2f}s")
 
         # Validation phase
         model.eval()
@@ -878,7 +885,7 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, pa
         # Calculate model size
         total_params = sum(p.numel() for p in model.parameters())
 
-        history = train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=batch_size, patience=3)
+        history = train_model(model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=batch_size, patience=PATIENCE)
 
         # Restore model metric results on validation set
         idx = history["val_loss"].index(min(history["val_loss"]))
@@ -1208,7 +1215,7 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
     prune_model = prune_transformer_linear_layers(prune_model, 0.3)
 
     # It is best practice to train the model again after pruning
-    history = train_model(prune_model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=batch_size,patience=3)
+    history = train_model(prune_model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=batch_size, patience=PATIENCE)
 
     # Restore prune model metric results on validation set
     idx = history["val_loss"].index(min(history["val_loss"]))
