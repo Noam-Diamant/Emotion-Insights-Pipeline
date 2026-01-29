@@ -92,11 +92,18 @@ ROBERTA_MODEL_NAME = "roberta-base"
 MODEL_NAMES = {"bert": BERT_MODEL_NAME, "electra": ELECTRA_MODEL_NAME, "roberta": ROBERTA_MODEL_NAME}
 
 MAX_LENGTH = 128
+# PARAM_GRID = {
+#     "dropout_rate": [0.1, 0.3],
+#     "lr": [2e-5, 3e-5],
+#     "batch_size": [16, 32],
+#     "weight_decay": [0.0, 0.01],
+# }
+
 PARAM_GRID = {
-    "dropout_rate": [0.1, 0.3],
-    "lr": [2e-5, 3e-5],
-    "batch_size": [16, 32],
-    "weight_decay": [0.0, 0.01],
+    "dropout_rate": [0.1],
+    "lr": [2e-5],
+    "batch_size": [16],
+    "weight_decay": [0.0],
 }
 NUM_CLASSES = 6
 CLASS_NAMES = ["sadness", "joy", "love", "anger", "fear", "suprise"]
@@ -953,7 +960,7 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, pa
     return summary
 
 
-def evaluate_model(model_type, texts = None, X = None, y = None, model = None, model_weights_path = None, model_params = None, model_prefix = ''):
+def evaluate_model(model_type, texts = None, X = None, y = None, model = None, model_weights_path = None, model_params = None, model_prefix = '', force_cpu = False):
     """
     Evaluate model.
 
@@ -966,6 +973,7 @@ def evaluate_model(model_type, texts = None, X = None, y = None, model = None, m
         model_weights_path: path for model weights file
         model_params: model hyperparameters
         model_prefix: description for the model (Optional for printing)
+        force_cpu: Force model to run on CPU (required for quantized models)
 
     Returns:
         dict: Evaluation model and predictions (including metrics if there are true labels)
@@ -985,10 +993,20 @@ def evaluate_model(model_type, texts = None, X = None, y = None, model = None, m
     lr = float(model_params.get("lr", 2e-5))
     weight_decay = float(model_params.get("weight_decay", 0.0))
     batch_size = int(model_params.get("batch_size", 16))
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Force CPU for quantized models (PyTorch qint8 limitation)
+    if force_cpu:
+        print(f"Quantized model: using CPU (PyTorch qint8 limitation)")
+        device = torch.device("cpu")
+    else:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if model is None:
         model, _, _ = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay)
+    else:
+        # If model is provided, move it to the appropriate device
+        model.to(device)
+        model.eval()
+        print(f"Model moved to {device}")
 
     # Load saved weights
     if model_weights_path is not None:
@@ -1017,7 +1035,9 @@ def evaluate_model(model_type, texts = None, X = None, y = None, model = None, m
         all_probs = []
         num_batches = (len(input_ids) + batch_size - 1) // batch_size
         print(f"Processing {num_batches} batches with batch_size={batch_size}")
-        for i in range(0, len(input_ids), batch_size):
+        for batch_idx, i in enumerate(range(0, len(input_ids), batch_size)):
+            if batch_idx % 25 == 0:  # Print progress every 25 batches
+                print(f"  Processing batch {batch_idx + 1}/{num_batches}...")
             batch_input_ids = input_ids[i : i + batch_size]
             batch_attention_mask = attention_mask[i : i + batch_size]
 
@@ -1027,6 +1047,7 @@ def evaluate_model(model_type, texts = None, X = None, y = None, model = None, m
 
         preds_proba = np.vstack(all_probs)
         preds = preds_proba.argmax(axis=1)
+        print(f"Predictions complete!")
         print(f"Predictions shape: {preds.shape}, probabilities shape: {preds_proba.shape}")
         print(f"Prediction range: [{preds.min()}, {preds.max()}], unique predictions: {len(np.unique(preds))}")
 
@@ -1036,13 +1057,14 @@ def evaluate_model(model_type, texts = None, X = None, y = None, model = None, m
 
     metrics = {}
     if y is not None:
+        print(f"Calculating metrics...")
         # Calculate metrics
         metrics["accuracy"] = accuracy_score(y, preds)
         metrics["f1"] = f1_score(y, preds, average="macro")
         metrics["precision"] = precision_score(y, preds, average="macro", zero_division=0)
         metrics["recall"] = recall_score(y, preds, average="macro", zero_division=0)
         labels_bin = label_binarize(y, classes=range(NUM_CLASSES))
-        metrics["auc_pr"] = average_precision_score(labels_bin, preds, average="macro")
+        metrics["auc_pr"] = average_precision_score(labels_bin, preds_proba, average="macro")
 
         # Print metrics
         print(f"\n{model_type.upper()} Metrics:")
@@ -1067,14 +1089,18 @@ def freeze_transformer(model):
 def quantize_model(model):
     """
     Apply dynamic quantization to linear layers.
+    
+    Note: Quantized models (qint8) only work on CPU in PyTorch.
 
     Args:
         model: transformer model
 
     Returns:
-        quantized model
+        quantized model (on CPU)
     """
     model.eval()
+    # Move to CPU as quantized models don't work on GPU
+    model.to(torch.device("cpu"))
     quantized_model = torch.quantization.quantize_dynamic(
         model,
         {nn.Linear},
@@ -1250,6 +1276,7 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
     ### Compression 2 quantization
 
     print(f"Compression 2 - quantization")
+    print(f"Note: Quantized models run on CPU (PyTorch qint8 limitation)")
     quantized_model = copy.deepcopy(model)
     quantized_model = quantize_model(quantized_model)
 
@@ -1260,7 +1287,7 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
     print(f"Saved quantize {model_type.upper()} model to {model_path}")
 
     # There is no need to retrain just make evaluation
-    quantize_info = evaluate_model(model_type = model_type, X=X_val, y=y_val, model=quantized_model, model_params=model_params,model_prefix='quantize_best')
+    quantize_info = evaluate_model(model_type = model_type, X=X_val, y=y_val, model=quantized_model, model_params=model_params,model_prefix='quantize_best', force_cpu=True)
     quantize_result = {
         "params": model_params,
         "val_accuracy": float(quantize_info["metrics"]["accuracy"]),
