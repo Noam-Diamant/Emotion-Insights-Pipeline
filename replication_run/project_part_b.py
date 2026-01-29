@@ -107,7 +107,8 @@ PARAM_GRID = {
 # }
 NUM_CLASSES = 6
 CLASS_NAMES = ["sadness", "joy", "love", "anger", "fear", "suprise"]
-NUM_EPOCHS = 10
+NUM_EPOCHS = 6
+FREEZE_TRANSFORMER = False  # Set to True to freeze transformer weights during training
 
 ### Inference test data section
 RUN_INFERENCE_ONLY = False
@@ -525,7 +526,7 @@ class TransformerClassifier(nn.Module):
         return logits
 
 
-def build_model(model_type="bert", dropout_rate=0.1, lr=2e-5, weight_decay=0.0):
+def build_model(model_type="bert", dropout_rate=0.1, lr=2e-5, weight_decay=0.0, freeze_transformer_weights=False):
     """
     Build and compile a transformer-based classification model.
 
@@ -534,6 +535,7 @@ def build_model(model_type="bert", dropout_rate=0.1, lr=2e-5, weight_decay=0.0):
         dropout_rate: Dropout rate for classification head
         lr: Learning rate for AdamW optimizer
         weight_decay: Weight decay for AdamW optimizer
+        freeze_transformer_weights: If True, freeze transformer parameters (only train classification head)
 
     Returns:
         Tuple of (model, optimizer, device)
@@ -544,8 +546,9 @@ def build_model(model_type="bert", dropout_rate=0.1, lr=2e-5, weight_decay=0.0):
     # Create model
     model = TransformerClassifier(model_type, dropout_rate)
 
-    # Freeze transformer params
-    freeze_transformer(model)
+    # Freeze transformer params if requested
+    if freeze_transformer_weights:
+        freeze_transformer(model)
 
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -870,7 +873,7 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, pa
         batch_size = int(params.get("batch_size", 16))
         weight_decay = float(params.get("weight_decay", 0.0))
 
-        model, optimizer, device = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay)
+        model, optimizer, device = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay, freeze_transformer_weights=FREEZE_TRANSFORMER)
 
         # Calculate model size
         total_params = sum(p.numel() for p in model.parameters())
@@ -1006,7 +1009,7 @@ def evaluate_model(model_type, texts = None, X = None, y = None, model = None, m
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if model is None:
-        model, _, _ = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay)
+        model, _, _ = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay, freeze_transformer_weights=FREEZE_TRANSFORMER)
     else:
         # If model is provided, move it to the appropriate device
         model.to(device)
@@ -1194,7 +1197,7 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
 
     # Restore best model
     print(f"Restore best model...")
-    model, optimizer, device = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr,weight_decay=weight_decay)
+    model, optimizer, device = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr,weight_decay=weight_decay, freeze_transformer_weights=FREEZE_TRANSFORMER)
     model.load_state_dict(torch.load(model_weights, map_location=device, weights_only=True))
     model.eval()
 
