@@ -92,22 +92,22 @@ ROBERTA_MODEL_NAME = "roberta-base"
 MODEL_NAMES = {"bert": BERT_MODEL_NAME, "electra": ELECTRA_MODEL_NAME, "roberta": ROBERTA_MODEL_NAME}
 
 MAX_LENGTH = 128
-# PARAM_GRID = {
-#     "dropout_rate": [0.1, 0.3],
-#     "lr": [2e-5, 3e-5],
-#     "batch_size": [16, 32],
-#     "weight_decay": [0.0, 0.01],
-# }
-
 PARAM_GRID = {
-    "dropout_rate": [0.1],
-    "lr": [2e-5],
-    "batch_size": [16],
-    "weight_decay": [0.0],
+     "dropout_rate": [0.1, 0.3],
+     "lr": [2e-5, 3e-5],
+     "batch_size": [16, 32],
+     "weight_decay": [0.0, 0.01],
 }
+
+# PARAM_GRID = {
+#     "dropout_rate": [0.1],
+#     "lr": [2e-5],
+#     "batch_size": [16],
+#     "weight_decay": [0.0],
+# }
 NUM_CLASSES = 6
 CLASS_NAMES = ["sadness", "joy", "love", "anger", "fear", "suprise"]
-NUM_EPOCHS = 1
+NUM_EPOCHS = 10
 
 ### Inference test data section
 RUN_INFERENCE_ONLY = False
@@ -134,7 +134,7 @@ def load_data(data_file, dataset_name="Data"):
     Load data from CSV file and do pre-process of the texts.
 
     Args:
-        data_file: Path to the CSV file
+        data_file: Path to the CSV file OR a pandas DataFrame
         dataset_name: Name of the dataset
 
     Returns:
@@ -143,10 +143,15 @@ def load_data(data_file, dataset_name="Data"):
     print("=" * 70)
     print(f"Loading {dataset_name}")
     print("=" * 70)
-    print(f"Reading file: {data_file}")
-    print(f"File exists: {os.path.exists(data_file)}")
-
-    df = pd.read_csv(data_file)
+    
+    # Check if data_file is a DataFrame or a file path
+    if isinstance(data_file, pd.DataFrame):
+        df = data_file
+        print(f"Using provided DataFrame")
+    else:
+        print(f"Reading file: {data_file}")
+        print(f"File exists: {os.path.exists(data_file)}")
+        df = pd.read_csv(data_file)
     print(f"Loaded {len(df)} samples from {data_file}")
     print(f"Columns: {df.columns.tolist()}")
     print(f"DataFrame shape: {df.shape}")
@@ -1396,7 +1401,11 @@ def run_inference(weights, csv):
 if __name__ == "__main__":
     # Set up output capture to both console and file
     os.makedirs(RESULTS_FOLDER, exist_ok=True)
-    output_file_path = os.path.join(RESULTS_FOLDER, "pipeline_output.txt")
+    # Use different output files for training vs inference mode
+    if RUN_INFERENCE_ONLY:
+        output_file_path = os.path.join(RESULTS_FOLDER, "inference_output.txt")
+    else:
+        output_file_path = os.path.join(RESULTS_FOLDER, "train_and_val_output.txt")
     tee_output = TeeOutput(output_file_path)
     original_stdout = sys.stdout
     sys.stdout = tee_output
