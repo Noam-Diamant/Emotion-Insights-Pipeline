@@ -110,7 +110,8 @@ python project_part_b.py
 ## Output Structure
 
 ### `./results/` folder:
-- `pipeline_output.txt`: Complete console output (auto-captured)
+- `train_and_val_output.txt`: Complete console output of training and val process(auto-captured)
+- `inference_output.txt`: Complete console output of test process(auto-captured)
 - `model_comparison.json` / `.csv`: All model comparisons
 - `hp_results_<model>.json`: Hyperparameter search results
 - `compressions_results_<model>.json`: Compression results
