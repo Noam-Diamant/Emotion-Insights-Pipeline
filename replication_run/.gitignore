@@ -1,0 +1,25 @@
+# Virtual environment
+.venv/
+venv/
+env/
+emotion_env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Model outputs
+hp_models/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
