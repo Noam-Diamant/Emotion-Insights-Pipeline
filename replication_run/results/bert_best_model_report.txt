@@ -1,0 +1,33 @@
+Best BERT model path: ./hp_models/bert_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt
+
+{
+  "params": {
+    "dropout_rate": 0.3,
+    "lr": 3e-05,
+    "batch_size": 32,
+    "weight_decay": 0.01
+  },
+  "val_accuracy": 0.938,
+  "val_precision": 0.893899619699131,
+  "val_recall": 0.9488777608170524,
+  "val_f1": 0.9163484627591584,
+  "val_auc_pr": 0.9813914306902102,
+  "model_path": "./hp_models/bert_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt",
+  "val_run_time_seconds": 2.2118042808026077,
+  "model_size_mb": 418.11165714263916,
+  "total_parameters": 109581446
+}
+
+Validation Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.99      0.95      0.97       550
+         joy       0.99      0.91      0.95       704
+        love       0.79      0.99      0.88       178
+       anger       0.92      0.97      0.95       275
+        fear       0.92      0.88      0.90       212
+     suprise       0.75      0.99      0.85        81
+
+    accuracy                           0.94      2000
+   macro avg       0.89      0.95      0.92      2000
+weighted avg       0.95      0.94      0.94      2000

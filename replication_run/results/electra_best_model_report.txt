@@ -1,0 +1,33 @@
+Best ELECTRA model path: ./hp_models/electra_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt
+
+{
+  "params": {
+    "dropout_rate": 0.3,
+    "lr": 3e-05,
+    "batch_size": 32,
+    "weight_decay": 0.01
+  },
+  "val_accuracy": 0.9355,
+  "val_precision": 0.8922571645755754,
+  "val_recall": 0.9466084371647362,
+  "val_f1": 0.9147178461517779,
+  "val_auc_pr": 0.9802086490544073,
+  "model_path": "./hp_models/electra_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt",
+  "val_run_time_seconds": 0.330399222439155,
+  "model_size_mb": 51.65411949157715,
+  "total_parameters": 13516678
+}
+
+Validation Classification Report:
+              precision    recall  f1-score   support
+
+     sadness       0.98      0.95      0.97       550
+         joy       0.98      0.92      0.95       704
+        love       0.80      0.99      0.89       178
+       anger       0.95      0.92      0.94       275
+        fear       0.87      0.90      0.89       212
+     suprise       0.76      1.00      0.86        81
+
+    accuracy                           0.94      2000
+   macro avg       0.89      0.95      0.91      2000
+weighted avg       0.94      0.94      0.94      2000

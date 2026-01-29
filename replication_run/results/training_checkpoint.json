@@ -1,0 +1,708 @@
+{
+  "completed_models": [
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "roberta_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}",
+    "roberta_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}",
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}",
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}",
+    "roberta_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}"
+  ],
+  "model_results": {
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9305,
+      "val_precision": 0.886422481049436,
+      "val_recall": 0.9427782842301103,
+      "val_f1": 0.9097262428636744,
+      "val_auc_pr": 0.9800583142534226,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.1_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.4189340037604175,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.935,
+      "val_precision": 0.891560287801061,
+      "val_recall": 0.9431004418453334,
+      "val_f1": 0.912953541621122,
+      "val_auc_pr": 0.981981178349006,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.1_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.418746853247285,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.929,
+      "val_precision": 0.8833247137594507,
+      "val_recall": 0.942505735620997,
+      "val_f1": 0.9071029423137665,
+      "val_auc_pr": 0.9776191033009742,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.1_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.2024012324400246,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9355,
+      "val_precision": 0.8920469313018938,
+      "val_recall": 0.9458971378508426,
+      "val_f1": 0.9146301891912545,
+      "val_auc_pr": 0.9804188296471791,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.1_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.206978278234601,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.933,
+      "val_precision": 0.8909625908920894,
+      "val_recall": 0.9364391803441018,
+      "val_f1": 0.9094619583540808,
+      "val_auc_pr": 0.9800457798320292,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.1_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.4379735249094665,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9345,
+      "val_precision": 0.891707332927076,
+      "val_recall": 0.9401529096179725,
+      "val_f1": 0.9120260859055968,
+      "val_auc_pr": 0.981589756979557,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.1_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.430873500648886,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.933,
+      "val_precision": 0.8889480354947629,
+      "val_recall": 0.9455861656098831,
+      "val_f1": 0.9120538345512313,
+      "val_auc_pr": 0.9812565112630072,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.2115047046293816,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9375,
+      "val_precision": 0.8976073490070626,
+      "val_recall": 0.9434654092065449,
+      "val_f1": 0.9162895730680017,
+      "val_auc_pr": 0.9814938266335882,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.210917885415256,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9335,
+      "val_precision": 0.8908283941874124,
+      "val_recall": 0.9369238766652304,
+      "val_f1": 0.9092017151695869,
+      "val_auc_pr": 0.9788559670513611,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.427141131212314,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9345,
+      "val_precision": 0.8921384345307991,
+      "val_recall": 0.9389499453435968,
+      "val_f1": 0.9118348820881259,
+      "val_auc_pr": 0.9795008785494077,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.435193231329322,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9275,
+      "val_precision": 0.8876482153496051,
+      "val_recall": 0.9296593335025838,
+      "val_f1": 0.9060123380594819,
+      "val_auc_pr": 0.9774612350327608,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.1989586148411036,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9355,
+      "val_precision": 0.8924450532512767,
+      "val_recall": 0.9458068454847394,
+      "val_f1": 0.9147089463673815,
+      "val_auc_pr": 0.979269482107327,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.2085111320018767,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9215,
+      "val_precision": 0.8741900002979786,
+      "val_recall": 0.9385373785020011,
+      "val_f1": 0.8998742302095281,
+      "val_auc_pr": 0.9638539861935719,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.4261321732774377,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.93,
+      "val_precision": 0.8872687531107798,
+      "val_recall": 0.9336145574852792,
+      "val_f1": 0.9069340090007229,
+      "val_auc_pr": 0.9751332320799738,
+      "model_path": "./hp_models/bert_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.426913567259908,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.929,
+      "val_precision": 0.8875924429860867,
+      "val_recall": 0.9376716161340554,
+      "val_f1": 0.9070575783200091,
+      "val_auc_pr": 0.9770392945442409,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.208913210313767,
+      "model_size_mb": 418.11145973205566,
+      "total_parameters": 109581446
+    },
+    "bert_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.938,
+      "val_precision": 0.893899619699131,
+      "val_recall": 0.9488777608170524,
+      "val_f1": 0.9163484627591584,
+      "val_auc_pr": 0.9813914306902102,
+      "model_path": "./hp_models/bert_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.2118042808026077,
+      "model_size_mb": 418.11165714263916,
+      "total_parameters": 109581446
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9325,
+      "val_precision": 0.8873017767712182,
+      "val_recall": 0.9443841842505806,
+      "val_f1": 0.9114230984865109,
+      "val_auc_pr": 0.9786867752803255,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.1_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.47253244636314257,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.931,
+      "val_precision": 0.8894767947101374,
+      "val_recall": 0.9414650606927876,
+      "val_f1": 0.9104408907680406,
+      "val_auc_pr": 0.9785349412015655,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.1_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.4746347505133599,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.934,
+      "val_precision": 0.8924349147642885,
+      "val_recall": 0.9412175444952354,
+      "val_f1": 0.9131551736273416,
+      "val_auc_pr": 0.9793665931674709,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.1_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.3340220991522074,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.931,
+      "val_precision": 0.8887330231596825,
+      "val_recall": 0.9386009955225986,
+      "val_f1": 0.9087222000652049,
+      "val_auc_pr": 0.980008731595973,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.1_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.3351475417148322,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.931,
+      "val_precision": 0.8916555701722105,
+      "val_recall": 0.9322085313290808,
+      "val_f1": 0.9098184641318019,
+      "val_auc_pr": 0.9785335141712935,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.1_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.46777878850698473,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9255,
+      "val_precision": 0.881963865880442,
+      "val_recall": 0.9388249806470471,
+      "val_f1": 0.9052336002957629,
+      "val_auc_pr": 0.9780526455169475,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.1_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.46528058461844923,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.924,
+      "val_precision": 0.8795508558505508,
+      "val_recall": 0.9413332799320319,
+      "val_f1": 0.9052398375928042,
+      "val_auc_pr": 0.9702381893035333,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.33779475186020136,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.926,
+      "val_precision": 0.8807727457024067,
+      "val_recall": 0.9426463336192109,
+      "val_f1": 0.9060527523900969,
+      "val_auc_pr": 0.9791304392326805,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.3374490787585576,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.934,
+      "val_precision": 0.8905772224830456,
+      "val_recall": 0.9449015689543302,
+      "val_f1": 0.9120385104221932,
+      "val_auc_pr": 0.9773723446760139,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.46917978138662875,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.919,
+      "val_precision": 0.8756533435829773,
+      "val_recall": 0.9313558289327449,
+      "val_f1": 0.8983087198800163,
+      "val_auc_pr": 0.9658952771815201,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.47217788035050035,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.932,
+      "val_precision": 0.8896899728464934,
+      "val_recall": 0.9429566807134941,
+      "val_f1": 0.9118611000651676,
+      "val_auc_pr": 0.9757884208074876,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.32934752026838915,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.929,
+      "val_precision": 0.8850118189844686,
+      "val_recall": 0.9385550764259718,
+      "val_f1": 0.9068079117882943,
+      "val_auc_pr": 0.9756589955175992,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.3_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.32482320442795753,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.929,
+      "val_precision": 0.8806465440123527,
+      "val_recall": 0.945090766152087,
+      "val_f1": 0.9070029852347256,
+      "val_auc_pr": 0.9781092197603903,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.49323023824642104,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 16, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9335,
+      "val_precision": 0.8907189689794435,
+      "val_recall": 0.9426092678962618,
+      "val_f1": 0.9120259720592219,
+      "val_auc_pr": 0.9792570278113545,
+      "model_path": "./hp_models/electra_batch_size16_dropout_rate0.3_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.47226405185129905,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9325,
+      "val_precision": 0.8920858880800706,
+      "val_recall": 0.9367998679922601,
+      "val_f1": 0.9086397883630167,
+      "val_auc_pr": 0.980929683518137,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 0.33247446614716736,
+      "model_size_mb": 51.65392208099365,
+      "total_parameters": 13516678
+    },
+    "electra_{\"batch_size\": 32, \"dropout_rate\": 0.3, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.3,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9355,
+      "val_precision": 0.8922571645755754,
+      "val_recall": 0.9466084371647362,
+      "val_f1": 0.9147178461517779,
+      "val_auc_pr": 0.9802086490544073,
+      "model_path": "./hp_models/electra_batch_size32_dropout_rate0.3_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 0.330399222439155,
+      "model_size_mb": 51.65411949157715,
+      "total_parameters": 13516678
+    },
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9315,
+      "val_precision": 0.8834951983666035,
+      "val_recall": 0.9476479416809606,
+      "val_f1": 0.9099048885533279,
+      "val_auc_pr": 0.9776232265176112,
+      "model_path": "./hp_models/roberta_batch_size16_dropout_rate0.1_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.206630314079424,
+      "model_size_mb": 475.95580196380615,
+      "total_parameters": 124744838
+    },
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.931,
+      "val_precision": 0.8899893380773936,
+      "val_recall": 0.9360891589528478,
+      "val_f1": 0.9098047077004927,
+      "val_auc_pr": 0.9808617048069177,
+      "model_path": "./hp_models/roberta_batch_size16_dropout_rate0.1_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.201161503791809,
+      "model_size_mb": 475.95599937438965,
+      "total_parameters": 124744838
+    },
+    "roberta_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9285,
+      "val_precision": 0.8830693050769526,
+      "val_recall": 0.940533171051472,
+      "val_f1": 0.9062383713311379,
+      "val_auc_pr": 0.9781321581123018,
+      "model_path": "./hp_models/roberta_batch_size32_dropout_rate0.1_lr2e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 1.9970239798227947,
+      "model_size_mb": 475.95580196380615,
+      "total_parameters": 124744838
+    },
+    "roberta_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 2e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 2e-05,
+        "batch_size": 32,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9355,
+      "val_precision": 0.8939492578495379,
+      "val_recall": 0.942277926873141,
+      "val_f1": 0.9128012962549291,
+      "val_auc_pr": 0.9795251530528345,
+      "model_path": "./hp_models/roberta_batch_size32_dropout_rate0.1_lr2e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 1.9942410510033368,
+      "model_size_mb": 475.95599937438965,
+      "total_parameters": 124744838
+    },
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.9335,
+      "val_precision": 0.8937430186067526,
+      "val_recall": 0.9297771866011302,
+      "val_f1": 0.9089351009120943,
+      "val_auc_pr": 0.979452670193735,
+      "model_path": "./hp_models/roberta_batch_size16_dropout_rate0.1_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 2.2060610987246037,
+      "model_size_mb": 475.95580196380615,
+      "total_parameters": 124744838
+    },
+    "roberta_{\"batch_size\": 16, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.01}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 16,
+        "weight_decay": 0.01
+      },
+      "val_accuracy": 0.9305,
+      "val_precision": 0.8866664054871177,
+      "val_recall": 0.9416173708411227,
+      "val_f1": 0.9090558302873424,
+      "val_auc_pr": 0.9785187593741157,
+      "model_path": "./hp_models/roberta_batch_size16_dropout_rate0.1_lr3e-05_weight_decay0.01.pt",
+      "val_run_time_seconds": 2.196127746719867,
+      "model_size_mb": 475.95599937438965,
+      "total_parameters": 124744838
+    },
+    "roberta_{\"batch_size\": 32, \"dropout_rate\": 0.1, \"lr\": 3e-05, \"weight_decay\": 0.0}": {
+      "params": {
+        "dropout_rate": 0.1,
+        "lr": 3e-05,
+        "batch_size": 32,
+        "weight_decay": 0.0
+      },
+      "val_accuracy": 0.924,
+      "val_precision": 0.8750429126755889,
+      "val_recall": 0.9394064469622219,
+      "val_f1": 0.9014261013635059,
+      "val_auc_pr": 0.9734758136133422,
+      "model_path": "./hp_models/roberta_batch_size32_dropout_rate0.1_lr3e-05_weight_decay0.0.pt",
+      "val_run_time_seconds": 1.976372903212905,
+      "model_size_mb": 475.95580196380615,
+      "total_parameters": 124744838
+    }
+  }
+}
