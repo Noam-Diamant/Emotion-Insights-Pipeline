@@ -84,6 +84,7 @@ TRAIN_FILE = "./data/train.csv"
 VALIDATION_FILE = "./data/validation.csv"
 RESULTS_FOLDER = "./results"
 SAVE_MODELS_FOLDER = "./hp_models"
+CHECKPOINT_FILE = "./results/training_checkpoint.json"  # Tracks training progress for resume
 
 # Models parameters
 BERT_MODEL_NAME = "bert-base-uncased"
@@ -107,7 +108,7 @@ PARAM_GRID = {
 # }
 NUM_CLASSES = 6
 CLASS_NAMES = ["sadness", "joy", "love", "anger", "fear", "suprise"]
-NUM_EPOCHS = 6
+NUM_EPOCHS = 10
 PATIENCE = 1  # Early stopping patience (epochs without improvement before stopping)
 FREEZE_TRANSFORMER = False  # Set to True to freeze transformer weights during training
 
@@ -129,6 +130,98 @@ def set_seed(seed=42):
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+
+
+def load_checkpoint():
+    """
+    Load training checkpoint to resume from previous run.
+    
+    Returns:
+        dict: Checkpoint data with completed models and stage info, or empty dict if no checkpoint
+    """
+    if os.path.exists(CHECKPOINT_FILE):
+        try:
+            with open(CHECKPOINT_FILE, 'r') as f:
+                checkpoint = json.load(f)
+            print(f"Loaded checkpoint from {CHECKPOINT_FILE}")
+            print(f"Previously completed: {checkpoint.get('completed_models', [])} models")
+            return checkpoint
+        except Exception as e:
+            print(f"Warning: Could not load checkpoint: {e}")
+            return {}
+    return {}
+
+
+def save_checkpoint(checkpoint):
+    """
+    Save training checkpoint to resume later if interrupted.
+    
+    Args:
+        checkpoint: dict with training progress information
+    """
+    try:
+        os.makedirs(os.path.dirname(CHECKPOINT_FILE), exist_ok=True)
+        with open(CHECKPOINT_FILE, 'w') as f:
+            json.dump(checkpoint, f, indent=2)
+        print(f"Checkpoint saved to {CHECKPOINT_FILE}")
+    except Exception as e:
+        print(f"Warning: Could not save checkpoint: {e}")
+
+
+def is_model_trained(checkpoint, model_type, params):
+    """
+    Check if a specific model configuration has already been trained.
+    
+    Args:
+        checkpoint: Checkpoint dictionary
+        model_type: Type of model (bert, electra, roberta)
+        params: Model parameters dict
+        
+    Returns:
+        bool: True if model is already trained
+    """
+    completed = checkpoint.get('completed_models', [])
+    model_key = f"{model_type}_{json.dumps(params, sort_keys=True)}"
+    return model_key in completed
+
+
+def mark_model_complete(checkpoint, model_type, params, result=None):
+    """
+    Mark a model configuration as completed in checkpoint.
+    
+    Args:
+        checkpoint: Checkpoint dictionary
+        model_type: Type of model
+        params: Model parameters dict
+        result: Optional result dictionary to store with the checkpoint
+    """
+    if 'completed_models' not in checkpoint:
+        checkpoint['completed_models'] = []
+    model_key = f"{model_type}_{json.dumps(params, sort_keys=True)}"
+    if model_key not in checkpoint['completed_models']:
+        checkpoint['completed_models'].append(model_key)
+    
+    # Store results for later comparison
+    if result is not None:
+        if 'model_results' not in checkpoint:
+            checkpoint['model_results'] = {}
+        checkpoint['model_results'][model_key] = result
+
+
+def get_model_result(checkpoint, model_type, params):
+    """
+    Get stored result for a completed model from checkpoint.
+    
+    Args:
+        checkpoint: Checkpoint dictionary
+        model_type: Type of model
+        params: Model parameters dict
+        
+    Returns:
+        dict: Stored result dictionary or None if not found
+    """
+    model_key = f"{model_type}_{json.dumps(params, sort_keys=True)}"
+    return checkpoint.get('model_results', {}).get(model_key)
 
 
 def load_data(data_file, dataset_name="Data"):
@@ -851,6 +944,9 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, pa
     print(f"{model_type.upper()} hyperparameter search will run {len(combos)} combos (max_models={max_models})")
     print(f"All parameter combinations: {combos}")
 
+    # Load checkpoint to resume from previous run
+    checkpoint = load_checkpoint()
+    
     # Prepare data with fixed max_length
     print(f"Preparing data with max_length={MAX_LENGTH}...")
     X_train = prepare_model_data(train_texts, y_train, model_type)
@@ -862,17 +958,61 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, pa
     best_report = None
     best_info = None
     model_count = 0
+    skipped_count = 0
 
     # Track total training time
     total_start_time = time.time()
     print(f"Hyperparameter search started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(total_start_time))}")
 
     for params in combos:
+        # Check if this model was already trained
+        if is_model_trained(checkpoint, model_type, params):
+            skipped_count += 1
+            print(f"\n[SKIPPED] {model_type.upper()} model with params {params} already trained (found in checkpoint)")
+            
+            # Try to load existing results
+            param_parts = []
+            for k, v in sorted(params.items()):
+                v_str = str(v)
+                param_parts.append(f"{k}{v_str}")
+            param_str = "_".join(param_parts)
+            model_path = f"{SAVE_MODELS_FOLDER}/{model_type}_{param_str}.pt"
+            
+            # If model file exists, we can skip; otherwise retrain
+            if os.path.exists(model_path):
+                print(f"Model file found: {model_path}")
+                
+                # Load stored results from checkpoint for comparison
+                stored_result = get_model_result(checkpoint, model_type, params)
+                if stored_result is not None:
+                    all_results.append(stored_result)
+                    val_f1 = stored_result["val_f1"]
+                    print(f"Loaded stored result: val_f1={val_f1:.4f}")
+                    
+                    # Check if this is the best model so far
+                    if val_f1 > best_val_f1:
+                        best_val_f1 = val_f1
+                        best_info = copy.deepcopy(stored_result)
+                        print(f"This skipped model is currently the best! Val f1: {best_val_f1:.4f}")
+                        
+                        # Note: We don't have confusion matrix and classification report in checkpoint
+                        # They will be regenerated at the end if this is the final best model
+                        best_cm = None
+                        best_report = None
+                else:
+                    print(f"Warning: No stored results found in checkpoint for this model")
+                
+                continue
+            else:
+                print(f"Warning: Model file not found, will retrain")
+        
         if (max_models is not None) and (model_count >= max_models):
             break
         model_count += 1
+        # Calculate remaining models to train (total - skipped)
+        remaining_to_train = len(combos) - skipped_count
         print("\n" + "=" * 60)
-        print(f"{model_type.upper()} Model {model_count}/{len(combos)} - params: {params}")
+        print(f"{model_type.upper()} Model {model_count}/{remaining_to_train} - params: {params}")
 
         # Extract parameters with defaults
         dropout_rate = float(params.get("dropout_rate", 0.1))
@@ -939,10 +1079,38 @@ def hyperparameter_search(model_type, train_texts, y_train, val_texts, y_val, pa
             best_cm = history["val_confusion_matrix"].copy()
             best_report = history["val_classification_report"]
             print(f"New best model found! Val f1: {best_val_f1:.4f}")
+        
+        # Mark model as complete and save checkpoint with results
+        mark_model_complete(checkpoint, model_type, params, result)
+        save_checkpoint(checkpoint)
 
     total_train_time = time.time() - total_start_time
     print(f"\nHyperparameter search completed in {total_train_time:.2f} seconds ({total_train_time / 60:.2f} minutes)")
-    print(f"Trained {model_count} models, best val_f1: {best_val_f1:.4f}")
+    print(f"Total combinations: {len(combos)} | Trained: {model_count} | Skipped: {skipped_count}")
+    print(f"Best val_f1: {best_val_f1:.4f}")
+    
+    # If best model was skipped, we need to regenerate confusion matrix and report
+    if best_cm is None or best_report is None:
+        print(f"\nBest model was loaded from checkpoint. Regenerating evaluation metrics...")
+        best_params = best_info["params"]
+        dropout_rate = float(best_params.get("dropout_rate", 0.1))
+        lr = float(best_params.get("lr", 2e-5))
+        weight_decay = float(best_params.get("weight_decay", 0.0))
+        
+        # Load the best model
+        model, optimizer, device = build_model(model_type=model_type, dropout_rate=dropout_rate, lr=lr, weight_decay=weight_decay, freeze_transformer_weights=FREEZE_TRANSFORMER)
+        model.load_state_dict(torch.load(best_info["model_path"], map_location=device, weights_only=True))
+        model.eval()
+        
+        # Evaluate to get confusion matrix and classification report
+        eval_result = evaluate_model(model_type=model_type, X=X_val, y=y_val, model=model, 
+                                      model_params=best_params, model_prefix='best_reeval')
+        
+        from sklearn.metrics import confusion_matrix, classification_report
+        best_cm = confusion_matrix(y_val, eval_result["predictions"])
+        best_report = classification_report(y_val, eval_result["predictions"], 
+                                           target_names=CLASS_NAMES, zero_division=0)
+        print(f"Regenerated metrics for best model")
 
     # Generate classification report
     print(f"\n{model_type.upper()} Classification Report:\n")
@@ -1185,6 +1353,9 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
             dict: results quantize compression.
         """
     print(f"\nStarting 2 compressions for best {model_type.upper()} model")
+    
+    # Load checkpoint
+    checkpoint = load_checkpoint()
 
     # Prepare data with fixed max_length
     print(f"Preparing data with max_length={MAX_LENGTH}...")
@@ -1211,39 +1382,75 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
     ### Compression 1 pruning
 
     print(f"Compression 1 - pruning")
-    prune_model = copy.deepcopy(model)
-    prune_model = prune_transformer_linear_layers(prune_model, 0.3)
-
-    # It is best practice to train the model again after pruning
-    history = train_model(prune_model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=batch_size, patience=PATIENCE)
-
-    # Restore prune model metric results on validation set
-    idx = history["val_loss"].index(min(history["val_loss"]))
-    val_acc = history["val_accuracy"][idx]
-    val_precision = history["val_precision"][idx]
-    val_recall = history["val_recall"][idx]
-    val_f1 = history["val_f1"][idx]
-    val_auc_pr = history["val_auc_pr"][idx]
-    train_run_time = sum(history["train_run_time"]) / len(history["train_run_time"])
-    val_run_time = sum(history["val_run_time"]) / len(history["val_run_time"])
-    epoch_run_time = train_run_time + val_run_time
-
-    print(f"Finished training. val_accuracy: {val_acc:.4f}, val_precision: {val_precision:.4f}, val_recall: {val_recall:.4f}, val_f1: {val_f1:.4f}, val_auc_pr: {val_auc_pr:.4f}")
-    print(f"Average epoch time: {epoch_run_time:.2f} seconds ({epoch_run_time / 60:.2f} minutes) - train: {train_run_time:.2f}s, val: {val_run_time:.2f}s")
-    print(f"Inference time (on average): {val_run_time:.2f} seconds ({val_run_time / 60:.2f} minutes)")
-
-    os.makedirs(SAVE_MODELS_FOLDER, exist_ok=True)
-    # Create prune model path with all parameters
+    
+    # Create param_str for file naming
     param_parts = []
     for k, v in sorted(model_params.items()):
         v_str = str(v)
         param_parts.append(f"{k}{v_str}")
     param_str = "_".join(param_parts)
-    model_path = f"{SAVE_MODELS_FOLDER}/prune_{model_type}_{param_str}.pt"
-    print(f"Saving prune model to {model_path}...")
-    prune_model = finalize_pruned_transformer(prune_model)
-    torch.save(prune_model.state_dict(), model_path)
-    print(f"Saved prune {model_type.upper()} model to {model_path}")
+    prune_model_path = f"{SAVE_MODELS_FOLDER}/prune_{model_type}_{param_str}.pt"
+    
+    # Check if pruned model already exists
+    if os.path.exists(prune_model_path):
+        print(f"[SKIPPED] Pruned model already exists: {prune_model_path}")
+        print(f"Loading existing pruned model...")
+        prune_model = copy.deepcopy(model)
+        prune_model = prune_transformer_linear_layers(prune_model, 0.3)
+        prune_model = finalize_pruned_transformer(prune_model)
+        prune_model.load_state_dict(torch.load(prune_model_path, map_location=device, weights_only=True))
+        prune_model.eval()
+        # Run evaluation only (no training)
+        print(f"Evaluating existing pruned model on validation set...")
+        history = {"val_loss": [0], "val_accuracy": [0], "val_precision": [0], "val_recall": [0], 
+                   "val_f1": [0], "val_auc_pr": [0], "train_run_time": [0], "val_run_time": [0]}
+        # Quick evaluation
+        prune_eval = evaluate_model(model_type=model_type, X=X_val, y=y_val, model=prune_model, 
+                                     model_params=model_params, model_prefix='pruned')
+        history["val_confusion_matrix"] = confusion_matrix(y_val, prune_eval["predictions"])
+        history["val_classification_report"] = classification_report(y_val, prune_eval["predictions"], 
+                                                                      target_names=CLASS_NAMES, zero_division=0)
+        val_acc = prune_eval["metrics"]["accuracy"]
+        val_precision = prune_eval["metrics"]["precision"]
+        val_recall = prune_eval["metrics"]["recall"]
+        val_f1 = prune_eval["metrics"]["f1"]
+        val_auc_pr = prune_eval["metrics"]["auc_pr"]
+        val_run_time = prune_eval["run_time"]
+        train_run_time = 0
+        epoch_run_time = val_run_time
+    else:
+        print(f"Training new pruned model...")
+        prune_model = copy.deepcopy(model)
+        prune_model = prune_transformer_linear_layers(prune_model, 0.3)
+
+        # It is best practice to train the model again after pruning
+        history = train_model(prune_model, optimizer, device, X_train, y_train, X_val, y_val, epochs=NUM_EPOCHS, batch_size=batch_size, patience=PATIENCE)
+        
+        # Restore prune model metric results on validation set
+        idx = history["val_loss"].index(min(history["val_loss"]))
+        val_acc = history["val_accuracy"][idx]
+        val_precision = history["val_precision"][idx]
+        val_recall = history["val_recall"][idx]
+        val_f1 = history["val_f1"][idx]
+        val_auc_pr = history["val_auc_pr"][idx]
+        train_run_time = sum(history["train_run_time"]) / len(history["train_run_time"])
+        val_run_time = sum(history["val_run_time"]) / len(history["val_run_time"])
+        epoch_run_time = train_run_time + val_run_time
+
+    print(f"Finished. val_accuracy: {val_acc:.4f}, val_precision: {val_precision:.4f}, val_recall: {val_recall:.4f}, val_f1: {val_f1:.4f}, val_auc_pr: {val_auc_pr:.4f}")
+    if train_run_time > 0:
+        print(f"Average epoch time: {epoch_run_time:.2f} seconds ({epoch_run_time / 60:.2f} minutes) - train: {train_run_time:.2f}s, val: {val_run_time:.2f}s")
+    print(f"Inference time: {val_run_time:.2f} seconds ({val_run_time / 60:.2f} minutes)")
+
+    os.makedirs(SAVE_MODELS_FOLDER, exist_ok=True)
+    model_path = prune_model_path
+    
+    # Save model if it doesn't exist yet
+    if not os.path.exists(model_path):
+        print(f"Saving prune model to {model_path}...")
+        prune_model = finalize_pruned_transformer(prune_model)
+        torch.save(prune_model.state_dict(), model_path)
+        print(f"Saved prune {model_type.upper()} model to {model_path}")
 
     # get size of pruned model
     total_params = sum(p.numel() for p in prune_model.parameters())
@@ -1292,17 +1499,29 @@ def model_compressions(model_type, train_texts, y_train, val_texts, y_val, model
 
     print(f"Compression 2 - quantization")
     print(f"Note: Quantized models run on CPU (PyTorch qint8 limitation)")
-    quantized_model = copy.deepcopy(model)
-    quantized_model = quantize_model(quantized_model)
-
-    # Create quantize model path with all parameters
-    model_path = f"{SAVE_MODELS_FOLDER}/quantize_{model_type}_{param_str}.pt"
-    print(f"Saving quantize model to {model_path}...")
-    torch.save(quantized_model.state_dict(), model_path)
-    print(f"Saved quantize {model_type.upper()} model to {model_path}")
+    
+    # Create quantize model path
+    quantize_model_path = f"{SAVE_MODELS_FOLDER}/quantize_{model_type}_{param_str}.pt"
+    
+    # Check if quantized model already exists
+    if os.path.exists(quantize_model_path):
+        print(f"[SKIPPED] Quantized model already exists: {quantize_model_path}")
+        print(f"Loading existing quantized model...")
+        quantized_model = copy.deepcopy(model)
+        quantized_model = quantize_model(quantized_model)
+        quantized_model.load_state_dict(torch.load(quantize_model_path, map_location=torch.device("cpu"), weights_only=True))
+        quantized_model.eval()
+    else:
+        print(f"Creating new quantized model...")
+        quantized_model = copy.deepcopy(model)
+        quantized_model = quantize_model(quantized_model)
+        print(f"Saving quantize model to {quantize_model_path}...")
+        torch.save(quantized_model.state_dict(), quantize_model_path)
+        print(f"Saved quantize {model_type.upper()} model to {quantize_model_path}")
 
     # There is no need to retrain just make evaluation
     quantize_info = evaluate_model(model_type = model_type, X=X_val, y=y_val, model=quantized_model, model_params=model_params,model_prefix='quantize_best', force_cpu=True)
+    model_path = quantize_model_path
     quantize_result = {
         "params": model_params,
         "val_accuracy": float(quantize_info["metrics"]["accuracy"]),
@@ -1441,6 +1660,9 @@ if __name__ == "__main__":
             run_inference(BEST_MODEL_WEIGHTS,TEST_FILE)
 
         else:
+            # Load checkpoint to check progress
+            main_checkpoint = load_checkpoint()
+            
             # Load data
             train_texts, train_labels = load_data(TRAIN_FILE, "Training Data")
             val_texts, val_labels = load_data(VALIDATION_FILE, "Validation Data")
@@ -1448,6 +1670,9 @@ if __name__ == "__main__":
             print(f"\nNumber of classes: {NUM_CLASSES}")
             print(f"Class names: {CLASS_NAMES}")
 
+            # ============================================================================
+            # BERT MODEL TRAINING
+            # ============================================================================
             # ============================================================================
             # BERT MODEL TRAINING
             # ============================================================================
