@@ -536,7 +536,7 @@ def plot_confusion_matrix(
 def prepare_model_data(processed_texts, labels=None, model_type="bert"):
     """
     Prepare data for transformer models using appropriate tokenizer.
-    Applies model-specific tokenization.
+    Applies model-specific tokenization .
 
     Args:
         processed_texts: Array of clean text strings
