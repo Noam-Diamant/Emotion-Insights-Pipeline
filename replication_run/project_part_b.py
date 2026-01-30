@@ -1584,11 +1584,11 @@ def run_inference(weights, csv):
     # Infer model type from weights filename
     model_type = None
     weights_filename = os.path.basename(weights).lower()
-    if "bert" in weights_filename:
+    if "bert_" in weights_filename:
         model_type = "bert"
-    elif "electra" in weights_filename:
+    elif "electra_" in weights_filename:
         model_type = "electra"
-    elif "roberta" in weights_filename:
+    elif "roberta_" in weights_filename:
         model_type = "roberta"
 
     if model_type is None:
